@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+  font-family: Helvetica;
+
+  color: white;
+  margin: 0;
+}
+
+body {
+  padding: 10px;
+  background: #272822;
+}
+
+h2 {
+  color: white;
+}
+
+.files-list {
+  display: inline-block;
+  width: 300px;  
+}
+.create-form {
+  display: inline-block;
+  width: 900px;
+}
+a.delete-file,
+a.delete-file:visited {
+  color: #fd971f;
+}
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 3px;
+}
+
+textarea {
+  min-height: 300px;
+}
+
+button {
+  height: 30px;
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  background: #a6e22e;
+  color: white;
+  margin: 10px 5px;
+  text-align: center;
+}
+
+button:hover {
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+
+#listOfFiles {
+  margin: 0;
+  padding: 0;
+  height: 330px;
+  overflow-y: auto;
+  list-style: none;
+  background: #F7F7F7;
+  border-radius: 3px;
+}
+
+#files li {
+  color: black;
+}

@@ -3,27 +3,29 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Filesys</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div>
+    <div class="files-list" id="files">
+        <h2>List of files created</h2>
+        <ul id="listOfFiles"></ul>
+    </div>    
+    <div class="create-form">
         <h1>Create and List File</h1>
         <form id="form1" action="" method="POST">
             <div>
-                File name to create: <br /><input type="text" name="txtFileName" id="txtFileName" placeholder="Filename to create">
+                File name to create: <input type="text" name="txtFileName" id="txtFileName" placeholder="Filename to create">
                 rename this file to <input type="text" name="txtRename" id="txtRename"/> <button type="button" id="btnRename" onclick="RenameTheFile()">Rename</button>
             </div>
             <div>Content to write in the file: <br />
                 <textarea name="txtFileContent" id="txtFileContent" rows="10" cols="51" placeholder="Type your content here..."></textarea>
             </div>
             <div>
-                <button type="submit">Save File</button> <a href="folders.html">Folders</a>
+                <button type="submit">Save File</button> 
                 <div id="lblMessages"></div>
             </div>
         </form>
-        <div id="files">
-            <h2>List of files created</h2>
-            <ul id="listOfFiles"></ul>
-        </div>
+
     </div>
 
 	
