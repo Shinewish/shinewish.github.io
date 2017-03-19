@@ -23,7 +23,7 @@ h1,
 .files-list {
   display: inline-block;
   vertical-align: top;
-  width: 300px; 
+  width: 330px; 
   margin: 0 20px 0 0; 
 }
 .create-form {
@@ -31,15 +31,18 @@ h1,
   width: 900px;
 }
 a.delete-file {
+  font-size: 1.5em;
   color: #fd971f;
 }
 input,
 textarea {
+  font-size: 1.5em;
   color: black;
   width: 100%;
-  padding: 10px;
-  font-size: 1rem;
   border-radius: 5px;
+}
+input {
+  height: 42px;
 }
 
 textarea {
@@ -47,7 +50,7 @@ textarea {
 }
 
 button {
-  font-size: 1.3em;
+  font-size: 1.5em;
   height: 30px;
   display: inline-block;
   border-radius: 3px;
