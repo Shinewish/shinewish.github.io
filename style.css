@@ -47,11 +47,12 @@ textarea {
 }
 
 button {
+  font-size: 1.3em;
   height: 30px;
   display: inline-block;
   border-radius: 3px;
   border: none;
-  background: #fd971f;
+  background: #fa6e00;
   color: white;
   margin: 10px 5px;
   text-align: center;
