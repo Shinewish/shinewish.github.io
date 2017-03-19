@@ -6,29 +6,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Totally new text editor!</h1>
     <div class="files-list" id="files">
-        <h2>List of files created</h2>
+        <h2 class="name-list">List of files created</h2>
         <ul id="listOfFiles"></ul>
     </div>    
     <div class="create-form">
-        <h1>Create and List File</h1>
-        <form id="form1" action="" method="POST">
+        <form id="form1" action="">
             <div>
-                File name to create: <input type="text" name="txtFileName" id="txtFileName" placeholder="Filename to create">
-                rename this file to <input type="text" name="txtRename" id="txtRename"/> <button type="button" id="btnRename" onclick="RenameTheFile()">Rename</button>
-            </div>
-            <div>Content to write in the file: <br />
-                <textarea name="txtFileContent" id="txtFileContent" rows="10" cols="51" placeholder="Type your content here..."></textarea>
+                <h2 class="name"> File name to create:</h2> 
+                <input type="text" name="txtFileName" id="txtFileName" placeholder="Filename to create">
+                <h2 class="name">rename this file to </h2>
+                <input type="text" name="txtRename" id="txtRename"/> 
+                <button type="button" id="btnRename" onclick="RenameTheFile()">Rename
+                </button>
             </div>
             <div>
-                <button type="submit">Save File</button> 
-                <div id="lblMessages"></div>
+                <h2 class="name">Content to write in the file:</h2>
+                <textarea name="txtFileContent" id="txtFileContent" placeholder="Type your content here..."></textarea>
+            </div>
+            <div>
+                <button type="submit">Save File</button>
             </div>
         </form>
 
     </div>
-
-	
 	<script src="test.js"></script>
 </body>
 </html>

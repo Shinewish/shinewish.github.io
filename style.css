@@ -11,20 +11,26 @@ body {
   background: #272822;
 }
 
-h2 {
-  color: white;
+h1,
+.name-list {
+  text-align: center;
+  margin: 5px 0 6px 0;
+}
+.name {
+  margin: 5px 0 5px 0;
 }
 
 .files-list {
   display: inline-block;
-  width: 300px;  
+  vertical-align: top;
+  width: 300px; 
+  margin: 0 20px 0 0; 
 }
 .create-form {
   display: inline-block;
   width: 900px;
 }
-a.delete-file,
-a.delete-file:visited {
+a.delete-file {
   color: #fd971f;
 }
 input,
@@ -33,11 +39,11 @@ textarea {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 textarea {
-  min-height: 300px;
+  min-height: 180px;
 }
 
 button {
@@ -45,7 +51,7 @@ button {
   display: inline-block;
   border-radius: 3px;
   border: none;
-  background: #a6e22e;
+  background: #fd971f;
   color: white;
   margin: 10px 5px;
   text-align: center;
@@ -60,11 +66,10 @@ button:hover {
 #listOfFiles {
   margin: 0;
   padding: 0;
-  height: 330px;
-  overflow-y: auto;
+  height: 388px;
   list-style: none;
   background: #F7F7F7;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 #files li {
