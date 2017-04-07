@@ -65,7 +65,7 @@ MyGame.Game.prototype = {
 
     //create touch controls
     if (!this.game.device.desktop) { 
-       this.game.input.onDown.add(this.scale.startFullScreen, this); 
+       //this.game.input.onDown.add(this.scale.startFullScreen, this); 
      // this.buttons = new MyGame.Buttons(this, this.game, this.player);
       //this.buttons.update =  this.buttons.prototype.update;
     //}    
