@@ -58,17 +58,17 @@ MyGame.Game.prototype = {
     this.gameStyle = {font: '50px Arial', fill :'red'};
     this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
     this.gameText.fixedToCamera = true;
+    this.fpsStyle = {font: '20px Arial', fill :'green'};
+    this.fpsText = this.game.add.text(120, 20, '', this.fpsStyle); 
+    this.fpsText.fixedToCamera = true;
     this.refreshStats();   
 
     //create touch controls
     if (!this.game.device.desktop) { 
-      // this.game.input.onDown.add(this.game.scale.startFullScreen, this); 
+       this.game.input.onDown.add(this.game.scale.startFullScreen, this); 
      // this.buttons = new MyGame.Buttons(this, this.game, this.player);
       //this.buttons.update =  this.buttons.prototype.update;
     //}    
-
-
-
         // create our virtual game controller buttons 
         buttonChange = this.game.add.button(360 - 80, 360 - 80, 'buttonChange', null, this, 0, 1, 0, 1);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
         buttonChange.fixedToCamera = true;  //our buttons should stay on the same place  
@@ -226,6 +226,7 @@ MyGame.Game.prototype = {
   },
   refreshStats: function() {
       this.scoreText.text = this.score;
+      this.fpsText.text = 'FPS: ' + this.game.time.fps;
   },
 
   update: function() {
@@ -250,7 +251,6 @@ MyGame.Game.prototype = {
 
     this.refreshStats();
 
-    this.game.debug.text('FPS: ' + this.game.time.fps, 120, 34, "#00ff00");
 
     this.enemies.forEach(function(enemy){
       let pDirection = this.game.math.angleBetween(enemy.x, enemy.y, this.player.x, this.player.y);
@@ -280,47 +280,49 @@ MyGame.Game.prototype = {
     }, this);
 
   
-    if (upPressed) {
-        this.player.body.velocity.y = -1 * this.player.speed;
-        this.player.play('go');
-    }
-    else if (downPressed) {
-        this.player.body.velocity.y = this.player.speed;
-        this.player.play('go');
-    }
-    else {
-      this.player.body.velocity.y = 0;
-    }
-    if (leftPressed) {
-        this.player.body.velocity.x = -1 * this.player.speed;
-        this.player.scale.setTo(-1, 1);
-        this.player.play('go');
-    }
-    else if (rightPressed) {
-        this.player.body.velocity.x = this.player.speed;
-        this.player.scale.setTo(1, 1);
-        this.player.play('go');
-    } else {
-        this.player.body.velocity.x = 0;
-    }
-    // if (changePressed) {
-    //   changeTexture(this.player);
-    //   function changeTexture(player) {
-    //     if (player.texture.baseTexture.source.name == 'player') {
-    //       player.loadTexture('cat', 0);
-    //     } else {
-    //       player.loadTexture('player', 0);
-    //     }
-    //   }
-    // }  //change to another frame of the spritesheet
-    // if (fire){fire_now(); player.loadTexture('mario', 8); }
-    if (this.game.input.currentPointers == 0 && !this.game.input.activePointer.isMouse) {
-        changePressed = false; 
-        rightPressed = false; 
-        leftPressed = false; 
-        downPressed = false; 
-        upPressed = false;
-    } //this works around a "bug" where a button gets stuck in pressed state
+    if (!this.game.device.desktop) {
+      if (upPressed) {
+            this.player.body.velocity.y = -1 * this.player.speed;
+            this.player.play('go');
+        }
+        else if (downPressed) {
+            this.player.body.velocity.y = this.player.speed;
+            this.player.play('go');
+        }
+        else {
+          this.player.body.velocity.y = 0;
+        }
+        if (leftPressed) {
+            this.player.body.velocity.x = -1 * this.player.speed;
+            this.player.scale.setTo(-1, 1);
+            this.player.play('go');
+        }
+        else if (rightPressed) {
+            this.player.body.velocity.x = this.player.speed;
+            this.player.scale.setTo(1, 1);
+            this.player.play('go');
+        } else {
+            this.player.body.velocity.x = 0;
+        }
+        // if (changePressed) {
+        //   changeTexture(this.player);
+        //   function changeTexture(player) {
+        //     if (player.texture.baseTexture.source.name == 'player') {
+        //       player.loadTexture('cat', 0);
+        //     } else {
+        //       player.loadTexture('player', 0);
+        //     }
+        //   }
+        // }  //change to another frame of the spritesheet
+        // if (fire){fire_now(); player.loadTexture('mario', 8); }
+        if (this.game.input.currentPointers == 0 && !this.game.input.activePointer.isMouse) {
+            changePressed = false; 
+            rightPressed = false; 
+            leftPressed = false; 
+            downPressed = false; 
+            upPressed = false;
+        } //this works around a "bug" where a button gets stuck in pressed state
+      }
   },
 
 };
