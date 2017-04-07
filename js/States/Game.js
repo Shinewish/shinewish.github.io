@@ -62,10 +62,35 @@ MyGame.Game.prototype = {
     this.fpsText = this.game.add.text(120, 20, '', this.fpsStyle); 
     this.fpsText.fixedToCamera = true;
     this.refreshStats();   
+    
+//fullscreen mode
+    let isFullScreenEnabled;
+    if(document.webkitFullscreenEnabled){
+       isFullScreenEnabled = document.webkitFullscreenEnabled;
+    }
+    else if(document.msFullscreenEnabled){ 
+       isFullScreenEnabled = document.msFullscreenEnabled;
+    } 
+    else if (document.mozFullScreenEnabled){
+       isFullScreenEnabled = document.mozFullScreenEnabled;
+    }
+    if (isFullScreenEnabled) { 
+       this.game.input.onDown.add(gofull, this); 
+    }
 
+    function gofull() {
+        if (this.game.scale.isFullScreen)
+        {
+            this.game.scale.stopFullScreen();
+        }
+        else
+        {
+            this.game.scale.startFullScreen(false);
+        }
+    }  
     //create touch controls
     if (!this.game.device.desktop) { 
-       this.game.input.onDown.add(this.scale.startFullScreen(), this); 
+     //  this.game.input.onDown.add(this.scale.startFullScreen(), this); 
      // this.buttons = new MyGame.Buttons(this, this.game, this.player);
       //this.buttons.update =  this.buttons.prototype.update;
     //}    
