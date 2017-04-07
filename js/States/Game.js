@@ -74,7 +74,9 @@ MyGame.Game.prototype = {
     else if (document.mozFullScreenEnabled){
        isFullScreenEnabled = document.mozFullScreenEnabled;
     }
-    if (isFullScreenEnabled) { 
+
+//temporary block fullscreen for nondesktop    
+    if (isFullScreenEnabled && this.game.device.desktop) { 
        this.game.input.onDown.add(gofull, this); 
     }
 
@@ -248,6 +250,7 @@ MyGame.Game.prototype = {
   },
   isFound: function() {
     this.gameText.text = 'Got you!';
+    this.state.start('Homescreen', true, false, 'Game over!');
   },
   refreshStats: function() {
       this.scoreText.text = this.score;

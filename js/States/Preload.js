@@ -8,10 +8,13 @@ MyGame.Preload.prototype = {
     //show loading screen
     this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
     this.preloadBar.anchor.setTo(0.5);
+    this.preloadBar.scale.setTo(2,1);
 
     this.load.setPreloadSprite(this.preloadBar);
 
     //load game assets
+    this.load.image('HomescreenBack', 'assets/images/HomescreenBack.png');
+
     this.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('gameTiles', 'assets/images/tiles.png');
     this.load.spritesheet('player', 'assets/images/player.png', 14, 16, 2)
@@ -34,6 +37,6 @@ MyGame.Preload.prototype = {
     this.load.spritesheet('buttonChange', 'assets/buttons/button-round-b.png',64,64);
   },
   create: function() {
-    this.state.start('Game');
+    this.state.start('Homescreen');
   }
 };
