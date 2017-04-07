@@ -65,7 +65,7 @@ MyGame.Game.prototype = {
 
     //create touch controls
     if (!this.game.device.desktop) { 
-       //this.game.input.onDown.add(this.scale.startFullScreen, this); 
+       this.game.input.onDown.add(this.scale.startFullScreen(), this); 
      // this.buttons = new MyGame.Buttons(this, this.game, this.player);
       //this.buttons.update =  this.buttons.prototype.update;
     //}    
@@ -283,7 +283,7 @@ MyGame.Game.prototype = {
     if (!this.game.device.desktop) {
       if (upPressed) {
             this.player.body.velocity.y = -1 * this.player.speed;
-            //this.player.play('go');
+            this.player.play('go');
         }
         else if (downPressed) {
             this.player.body.velocity.y = this.player.speed;
