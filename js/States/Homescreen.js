@@ -18,11 +18,11 @@ MyGame.Homescreen.prototype = {
     }, this);
     
     let homescreenStyle = {font: '20px Arial', fill: 'green'};
-    let homescreenText = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Touch to start', homescreenStyle); 
+    let homescreenText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Touch to start', homescreenStyle); 
     homescreenText.anchor.setTo(0.5);
 
     if (this.message) {
-        this.game.add.text(this.game.world.centerX - 30, 50, this.message, homescreenStyle);
+        this.game.add.text(this.game.width / 2 - 30, 50, this.message, homescreenStyle);
     };
 
   }
