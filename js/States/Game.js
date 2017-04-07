@@ -283,7 +283,7 @@ MyGame.Game.prototype = {
     if (!this.game.device.desktop) {
       if (upPressed) {
             this.player.body.velocity.y = -1 * this.player.speed;
-            this.player.play('go');
+            //this.player.play('go');
         }
         else if (downPressed) {
             this.player.body.velocity.y = this.player.speed;
@@ -315,7 +315,7 @@ MyGame.Game.prototype = {
         //   }
         // }  //change to another frame of the spritesheet
         // if (fire){fire_now(); player.loadTexture('mario', 8); }
-        if (this.game.input.currentPointers == 0 && !this.game.input.activePointer.isMouse) {
+        if (this.game.input.totalActivePointers == 0 || this.game.input.activePointer.isMouse) {
             changePressed = false; 
             rightPressed = false; 
             leftPressed = false; 
