@@ -16,6 +16,10 @@ MyGame.Game.prototype = {
     this.backgroundlayer.alpha = 0.5;
     this.blockedLayer = this.map.createLayer('blockedLayer');
 
+
+//  fps
+    this.game.time.advancedTiming = true;
+    
     //collision on blockedLayer
     this.map.setCollisionBetween(1, 200000, true, 'blockedLayer');
 
@@ -246,6 +250,7 @@ MyGame.Game.prototype = {
 
     this.refreshStats();
 
+    this.game.debug.text('FPS: ' + this.game.time.fps, 120, 34, "#00ff00");
 
     this.enemies.forEach(function(enemy){
       let pDirection = this.game.math.angleBetween(enemy.x, enemy.y, this.player.x, this.player.y);
