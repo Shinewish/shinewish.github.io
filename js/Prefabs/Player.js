@@ -43,33 +43,35 @@ MyGame.Player.prototype.update = function() {
 	    this.visibility = 1;
 	}
 	//player movement
-    this.body.velocity.x = 0;
+
 
     if (this.wld.cursors.up.isDown || this.wld.altCursors.up.isDown) {
-      	if (this.wld.player.body.velocity.y == 0)
-      	this.wld.player.body.velocity.y -= this.wld.player.speed;
+    	this.wld.player.body.velocity.y = -1 * this.wld.player.speed;
 		this.play('go');
     }
     else if (this.wld.cursors.down.isDown || this.wld.altCursors.down.isDown) {
-      	if (this.wld.player.body.velocity.y == 0)
-      	this.wld.player.body.velocity.y += this.wld.player.speed;
+      	this.wld.player.body.velocity.y = this.wld.player.speed;
 		this.play('go');
     }
     else {
       this.wld.player.body.velocity.y = 0;
     }
     if (this.wld.cursors.left.isDown || this.wld.altCursors.left.isDown) {
-      	this.wld.player.body.velocity.x -= this.wld.player.speed;
+      	this.wld.player.body.velocity.x = -1 * this.wld.player.speed;
 		this.scale.setTo(-1, 1);
 		this.play('go');
     }
     else if (this.wld.cursors.right.isDown || this.wld.altCursors.right.isDown) {
-      	this.wld.player.body.velocity.x += this.wld.player.speed;
+      	this.wld.player.body.velocity.x = this.wld.player.speed;
 		this.scale.setTo(1, 1);
 		this.play('go');
+    } else {
+    	this.wld.player.body.velocity.x = 0;
     }
 
     this.wld.keyChange.change.onDown.add(changeTexture, this);
+//    this.wld.keyChange.change.onDown.add(changeTexture, this);
+
     function changeTexture() {
     	if (this.wld.player.texture.baseTexture.source.name == 'player') {
     		this.wld.player.loadTexture('cat', 0);
@@ -77,7 +79,7 @@ MyGame.Player.prototype.update = function() {
     		this.wld.player.loadTexture('player', 0);
     	}
     }
-
+};
 
 
 
@@ -116,7 +118,7 @@ MyGame.Player.prototype.update = function() {
 		this.body.velocity.x = this.game.math.max(this.speed * this.xDistance / this.dist);
 		this.body.velocity.y = this.game.math.max(this.speed * this.yDistance / this.dist);
 	}*/
-};
+
 
 
 // to add enemy to game we should write in game.create:

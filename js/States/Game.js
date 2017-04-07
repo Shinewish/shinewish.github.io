@@ -42,7 +42,8 @@ MyGame.Game.prototype = {
 
     //create enemies
     this.createEnemies();
- 
+    
+    //create score
     this.score = 0;
     this.style = {font: '20px Arial', fill :'#ffffff'};
     this.scoreString = this.game.add.text(10, 20, 'Score:', this.style);
@@ -54,6 +55,11 @@ MyGame.Game.prototype = {
     this.gameText.fixedToCamera = true;
     this.refreshStats();   
 
+    //create touch controls
+    if (!this.game.device.desktop) { 
+      // this.game.input.onDown.add(this.game.scale.startFullScreen, this); 
+      this.buttons = new MyGame.Buttons(this, this.game, this.player);
+    }    
 
   },
   createItems: function() {
@@ -61,7 +67,7 @@ MyGame.Game.prototype = {
     this.items = this.game.add.group();
     this.items.enableBody = true;
     let item;    
-    result = this.findObjectsByType('item', this.map, 'objectsLayer');
+    let result = this.findObjectsByType('item', this.map, 'objectsLayer');
     result.forEach(function(element){
       this.createFromTiledObject(element, this.items);
     }, this);
@@ -70,7 +76,7 @@ MyGame.Game.prototype = {
     //create items
     this.enemies = this.game.add.group();
     this.enemies.enableBody = true;
-    result = this.findObjectsByType('enemy', this.map, 'objectsLayer');
+    let result = this.findObjectsByType('enemy', this.map, 'objectsLayer');
     result.forEach(function(element){
       let enemy = new MyGame.Enemy(this.game, this.player, element.x, element.y, element.properties.sprite, element.properties.path);
       this.enemies.add(enemy);
@@ -81,7 +87,7 @@ MyGame.Game.prototype = {
     //create doors
     this.doors = this.game.add.group();
     this.doors.enableBody = true;
-    result = this.findObjectsByType('door', this.map, 'objectsLayer');
+    let result = this.findObjectsByType('door', this.map, 'objectsLayer');
 
     result.forEach(function(element){
       this.createFromTiledObject(element, this.doors);
@@ -91,7 +97,7 @@ MyGame.Game.prototype = {
     //create doors
     this.darkLayer = this.game.add.group();
     this.darkLayer.enableBody = true;
-    result = this.findObjectsByType('darkPlace', this.map, 'objectsLayer');
+    let result = this.findObjectsByType('darkPlace', this.map, 'objectsLayer');
 
     result.forEach(function(element){
       this.createFromTiledObject(element, this.darkLayer);
@@ -119,9 +125,9 @@ MyGame.Game.prototype = {
       });
   },
   update: function() {
-    // //player initial properties
-    // this.player.alpha = 1;
-    // this.player.visibility = 1;
+    
+    this.buttons.update();
+    // Score initial properties
     if (this.gameText.text != 'You WIN!') {
       this.gameText.text = ''
     };

@@ -26,7 +26,12 @@ MyGame.Preload.prototype = {
     this.load.image('icecream', 'assets/images/icecream.png');
     this.load.image('browndoor', 'assets/images/browndoor.png');
     this.load.image('darkPlace', 'assets/images/darkPlace.png');
-    
+        //gamepad buttons
+    this.load.spritesheet('buttonvertical', 'assets/buttons/button-vertical.png',32,32);
+    this.load.spritesheet('buttonhorizontal', 'assets/buttons/button-horizontal.png',32,32);
+    this.load.spritesheet('buttondiagonal', 'assets/buttons/button-diagonal.png',32,32);
+    this.load.spritesheet('buttonfire', 'assets/buttons/button-round-a.png',64,64);
+    this.load.spritesheet('buttonChange', 'assets/buttons/button-round-b.png',64,64);
   },
   create: function() {
     this.state.start('Game');
