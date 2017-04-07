@@ -44,30 +44,31 @@ MyGame.Player.prototype.update = function() {
 	}
 	//player movement
 
-
-    if (this.wld.cursors.up.isDown || this.wld.altCursors.up.isDown) {
-    	this.wld.player.body.velocity.y = -1 * this.wld.player.speed;
-		this.play('go');
-    }
-    else if (this.wld.cursors.down.isDown || this.wld.altCursors.down.isDown) {
-      	this.wld.player.body.velocity.y = this.wld.player.speed;
-		this.play('go');
-    }
-    else {
-      this.wld.player.body.velocity.y = 0;
-    }
-    if (this.wld.cursors.left.isDown || this.wld.altCursors.left.isDown) {
-      	this.wld.player.body.velocity.x = -1 * this.wld.player.speed;
-		this.scale.setTo(-1, 1);
-		this.play('go');
-    }
-    else if (this.wld.cursors.right.isDown || this.wld.altCursors.right.isDown) {
-      	this.wld.player.body.velocity.x = this.wld.player.speed;
-		this.scale.setTo(1, 1);
-		this.play('go');
-    } else {
-    	this.wld.player.body.velocity.x = 0;
-    }
+	if (this.game.device.desktop) {
+	    if (this.wld.cursors.up.isDown || this.wld.altCursors.up.isDown) {
+	    	this.wld.player.body.velocity.y = -1 * this.wld.player.speed;
+			this.play('go');
+	    }
+	    else if (this.wld.cursors.down.isDown || this.wld.altCursors.down.isDown) {
+	      	this.wld.player.body.velocity.y = this.wld.player.speed;
+			this.play('go');
+	    }
+	    else {
+	      this.wld.player.body.velocity.y = 0;
+	    }
+	    if (this.wld.cursors.left.isDown || this.wld.altCursors.left.isDown) {
+	      	this.wld.player.body.velocity.x = -1 * this.wld.player.speed;
+			this.scale.setTo(-1, 1);
+			this.play('go');
+	    }
+	    else if (this.wld.cursors.right.isDown || this.wld.altCursors.right.isDown) {
+	      	this.wld.player.body.velocity.x = this.wld.player.speed;
+			this.scale.setTo(1, 1);
+			this.play('go');
+	    } else {
+	    	this.wld.player.body.velocity.x = 0;
+	    }
+	}
 
     this.wld.keyChange.change.onDown.add(changeTexture, this);
 //    this.wld.keyChange.change.onDown.add(changeTexture, this);

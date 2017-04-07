@@ -1,5 +1,6 @@
 var MyGame = MyGame || {};
 
+
 //title screen
 MyGame.Game = function(){};
 
@@ -58,9 +59,84 @@ MyGame.Game.prototype = {
     //create touch controls
     if (!this.game.device.desktop) { 
       // this.game.input.onDown.add(this.game.scale.startFullScreen, this); 
-      this.buttons = new MyGame.Buttons(this, this.game, this.player);
-    }    
+     // this.buttons = new MyGame.Buttons(this, this.game, this.player);
+      //this.buttons.update =  this.buttons.prototype.update;
+    //}    
 
+
+
+        // create our virtual game controller buttons 
+        buttonChange = this.game.add.button(360 - 80, 360 - 80, 'buttonChange', null, this, 0, 1, 0, 1);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
+        buttonChange.fixedToCamera = true;  //our buttons should stay on the same place  
+        buttonChange.events.onInputOver.add(changeTexture, this);
+        buttonChange.events.onInputOut.add(function(){changePressed=false;});
+        buttonChange.events.onInputDown.add(changeTexture, this);
+        buttonChange.events.onInputUp.add(function(){changePressed=false;});
+
+        function changeTexture() {
+          if (this.player.texture.baseTexture.source.name == 'player') {
+            this.player.loadTexture('cat', 0);
+          } else {
+            this.player.loadTexture('player', 0);
+          }
+        }
+
+        buttonUp = this.game.add.button(32, 360 - 96, 'buttonvertical', null, this, 0, 1, 0, 1);
+        buttonUp.fixedToCamera = true;
+        buttonUp.events.onInputOver.add(function(){upPressed=true;});
+        buttonUp.events.onInputOut.add(function(){upPressed=false;});
+        buttonUp.events.onInputDown.add(function(){upPressed=true;});
+        buttonUp.events.onInputUp.add(function(){upPressed=false;});
+
+        buttonUpRight = this.game.add.button(64, 360 - 96, 'buttondiagonal', null, this, 3, 1, 3, 1);
+        buttonUpRight.fixedToCamera = true;
+        buttonUpRight.events.onInputOver.add(function(){rightPressed=true;upPressed=true;});
+        buttonUpRight.events.onInputOut.add(function(){rightPressed=false;upPressed=false;});
+        buttonUpRight.events.onInputDown.add(function(){rightPressed=true;upPressed=true;});
+        buttonUpRight.events.onInputUp.add(function(){rightPressed=false;upPressed=false;});
+
+        buttonRight = this.game.add.button(64, 360 - 64, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+        buttonRight.fixedToCamera = true;
+        buttonRight.events.onInputOver.add(function(){rightPressed=true;});
+        buttonRight.events.onInputOut.add(function(){rightPressed=false;});
+        buttonRight.events.onInputDown.add(function(){rightPressed=true;});
+        buttonRight.events.onInputUp.add(function(){rightPressed=false;});
+
+        buttonBottomRight = this.game.add.button(64, 360 - 32, 'buttondiagonal', null, this, 7, 5, 7, 5);
+        buttonBottomRight.fixedToCamera = true;
+        buttonBottomRight.events.onInputOver.add(function(){rightPressed=true;downPressed=true;});
+        buttonBottomRight.events.onInputOut.add(function(){rightPressed=false;downPressed=false;});
+        buttonBottomRight.events.onInputDown.add(function(){rightPressed=true;downPressed=true;});
+        buttonBottomRight.events.onInputUp.add(function(){rightPressed=false;downPressed=false;});
+
+        buttonDown = this.game.add.button(32, 360 - 32, 'buttonvertical', null, this, 0, 1, 0, 1);
+        buttonDown.fixedToCamera = true;
+        buttonDown.events.onInputOver.add(function(){downPressed=true;});
+        buttonDown.events.onInputOut.add(function(){downPressed=false;});
+        buttonDown.events.onInputDown.add(function(){downPressed=true;});
+        buttonDown.events.onInputUp.add(function(){downPressed=false;});
+
+        buttonBottomLeft = this.game.add.button(0, 360 - 32, 'buttondiagonal', null, this, 6, 4, 6, 4);
+        buttonBottomLeft.fixedToCamera = true;
+        buttonBottomLeft.events.onInputOver.add(function(){leftPressed=true;downPressed=true;});
+        buttonBottomLeft.events.onInputOut.add(function(){leftPressed=false;downPressed=false;});
+        buttonBottomLeft.events.onInputDown.add(function(){leftPressed=true;downPressed=true;});
+        buttonBottomLeft.events.onInputUp.add(function(){leftPressed=false;downPressed=false;});
+
+        buttonLeft = this.game.add.button(0, 360 - 64, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+        buttonLeft.fixedToCamera = true;
+        buttonLeft.events.onInputOver.add(function(){leftPressed=true;});
+        buttonLeft.events.onInputOut.add(function(){leftPressed=false;});
+        buttonLeft.events.onInputDown.add(function(){leftPressed=true;});
+        buttonLeft.events.onInputUp.add(function(){leftPressed=false;});
+
+        buttonUpLeft = this.game.add.button(0, 360 - 96, 'buttondiagonal', null, this, 2, 0, 2, 0);
+        buttonUpLeft.fixedToCamera = true;
+        buttonUpLeft.events.onInputOver.add(function(){leftPressed=true;upPressed=true;});
+        buttonUpLeft.events.onInputOut.add(function(){leftPressed=false;upPressed=false;});
+        buttonUpLeft.events.onInputDown.add(function(){leftPressed=true;upPressed=true;});
+        buttonUpLeft.events.onInputUp.add(function(){leftPressed=false;upPressed=false;});
+    }
   },
   createItems: function() {
     //create items
@@ -72,7 +148,7 @@ MyGame.Game.prototype = {
       this.createFromTiledObject(element, this.items);
     }, this);
   },
-    createEnemies: function() {
+  createEnemies: function() {
     //create items
     this.enemies = this.game.add.group();
     this.enemies.enableBody = true;
@@ -124,9 +200,33 @@ MyGame.Game.prototype = {
         sprite[key] = element.properties[key];
       });
   },
+
+  collect: function(player, collectable) {
+    console.log('yummy!');
+    this.score = this.score + 10;
+
+    //remove sprite
+    collectable.destroy();
+  },
+  enterDoor: function(player, door) {
+    if (this.score == 100) {
+      this.gameStyle.fill = 'green';
+      this.gameText.text = 'You WIN!';
+    }
+  },
+  dissapear: function(player) {
+    player.isHiding = 1;
+  },
+  isFound: function() {
+    this.gameText.text = 'Got you!';
+  },
+  refreshStats: function() {
+      this.scoreText.text = this.score;
+  },
+
   update: function() {
     
-    this.buttons.update();
+    
     // Score initial properties
     if (this.gameText.text != 'You WIN!') {
       this.gameText.text = ''
@@ -174,28 +274,48 @@ MyGame.Game.prototype = {
       }
     }, this);
 
-  },
-  collect: function(player, collectable) {
-    console.log('yummy!');
-    this.score = this.score + 10;
-
-    //remove sprite
-    collectable.destroy();
-  },
-  enterDoor: function(player, door) {
-    if (this.score == 100) {
-      this.gameStyle.fill = 'green';
-      this.gameText.text = 'You WIN!';
+  
+    if (upPressed) {
+        this.player.body.velocity.y = -1 * this.player.speed;
+        this.player.play('go');
     }
-  },
-  dissapear: function(player) {
-    player.isHiding = 1;
-  },
-  isFound: function() {
-    this.gameText.text = 'Got you!';
-  },
-  refreshStats: function() {
-      this.scoreText.text = this.score;
+    else if (downPressed) {
+        this.player.body.velocity.y = this.player.speed;
+        this.player.play('go');
+    }
+    else {
+      this.player.body.velocity.y = 0;
+    }
+    if (leftPressed) {
+        this.player.body.velocity.x = -1 * this.player.speed;
+        this.player.scale.setTo(-1, 1);
+        this.player.play('go');
+    }
+    else if (rightPressed) {
+        this.player.body.velocity.x = this.player.speed;
+        this.player.scale.setTo(1, 1);
+        this.player.play('go');
+    } else {
+        this.player.body.velocity.x = 0;
+    }
+    // if (changePressed) {
+    //   changeTexture(this.player);
+    //   function changeTexture(player) {
+    //     if (player.texture.baseTexture.source.name == 'player') {
+    //       player.loadTexture('cat', 0);
+    //     } else {
+    //       player.loadTexture('player', 0);
+    //     }
+    //   }
+    // }  //change to another frame of the spritesheet
+    // if (fire){fire_now(); player.loadTexture('mario', 8); }
+    if (this.game.input.currentPointers == 0 && !this.game.input.activePointer.isMouse) {
+        changePressed = false; 
+        rightPressed = false; 
+        leftPressed = false; 
+        downPressed = false; 
+        upPressed = false;
+    } //this works around a "bug" where a button gets stuck in pressed state
   },
 
 };
