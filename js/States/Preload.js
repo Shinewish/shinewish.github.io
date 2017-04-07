@@ -1,0 +1,34 @@
+var MyGame = MyGame || {};
+
+//loading the game assets
+MyGame.Preload = function(){};
+
+MyGame.Preload.prototype = {
+  preload: function() {
+    //show loading screen
+    this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
+    this.preloadBar.anchor.setTo(0.5);
+
+    this.load.setPreloadSprite(this.preloadBar);
+
+    //load game assets
+    this.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('gameTiles', 'assets/images/tiles.png');
+    this.load.spritesheet('player', 'assets/images/player.png', 14, 16, 2)
+    this.load.spritesheet('cat', 'assets/images/cat.png', 14, 14, 2);
+    this.load.spritesheet('guard', 'assets/images/enemy.png', 16, 16, 2);
+    this.load.spritesheet('bat', 'assets/images/bat.png', 16, 12, 2);
+    this.load.spritesheet('gorgul', 'assets/images/gorgul.png', 15, 16, 2);
+    this.load.spritesheet('enemyVision', 'assets/images/visionEnemy.png', 40, 40, 2);
+    this.load.spritesheet('enemyVision2', 'assets/images/visionEnemy2.png', 60, 60, 2);
+    this.load.spritesheet('enemyVision3', 'assets/images/visionEnemy3.png', 72, 70, 2);
+    this.load.image('rat', 'assets/images/rat.png');
+    this.load.image('icecream', 'assets/images/icecream.png');
+    this.load.image('browndoor', 'assets/images/browndoor.png');
+    this.load.image('darkPlace', 'assets/images/darkPlace.png');
+    
+  },
+  create: function() {
+    this.state.start('Game');
+  }
+};

@@ -1,36 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Filesys</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Totally new text editor!</h1>
-    <div class="files-list" id="files">
-        <h2 class="name-list">List of files created</h2>
-        <ul id="listOfFiles"></ul>
-    </div>    
-    <div class="create-form">
-        <form id="form1" action="">
-            <div>
-                <h2 class="name"> File name to create:</h2> 
-                <input type="text" name="txtFileName" id="txtFileName" placeholder="Filename to create">
-                <h2 class="name">rename this file to </h2>
-                <input type="text" name="txtRename" id="txtRename"/> 
-                <button type="button" id="btnRename" onclick="RenameTheFile()">Rename
-                </button>
-            </div>
-            <div>
-                <h2 class="name">Content to write in the file:</h2>
-                <textarea name="txtFileContent" id="txtFileContent" placeholder="Type your content here..."></textarea>
-            </div>
-            <div>
-                <button type="submit">Save File</button>
-            </div>
-        </form>
+<html>
 
-    </div>
-	<script src="test.js"></script>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<title>Game</title>
+
+		<script type="text/javascript" src="js/phaser.min.js"></script>
+		<script type="text/javascript" src="js/States/Boot.js"></script>
+		<script type="text/javascript" src="js/States/Preload.js"></script>
+		<script type="text/javascript" src="js/States/Game.js"></script>
+		<script type="text/javascript" src="js/Prefabs/Enemy.js"></script>
+		<script type="text/javascript" src="js/Prefabs/Player.js"></script>
+
+
+		<style>
+		  body {
+		    padding: 0px;
+		    margin: 0px;
+		  }
+		  </style>
+	</head>
+
+	<body>  
+		<!-- include the main game file -->
+		<script src="js/main.js"></script>
+	</body>
 </html>
