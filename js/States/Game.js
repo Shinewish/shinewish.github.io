@@ -270,7 +270,7 @@ MyGame.Game.prototype = {
   },
   isFound: function() {
     this.gameText.text = 'Got you!';
-    this.state.start('Homescreen', true, false, 'Game over!');
+    this.state.start('Homescreen', true, false, {message: 'Game over!', score: this.score});
   },
   refreshStats: function() {
     this.scoreText.text = this.score;

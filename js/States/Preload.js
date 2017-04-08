@@ -13,7 +13,8 @@ MyGame.Preload.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
 
     //load game assets
-    this.load.image('HomescreenBack', 'assets/images/HomescreenBack.png');
+    this.load.image('HomescreenBack', 'assets/images/safe_image.jpg');
+    this.load.image('goldPile', 'assets/images/gold-coins-animated-gif.gif');
 
     this.load.tilemap('level1', 'assets/tilemaps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('gameTiles', 'assets/images/tiles.png');

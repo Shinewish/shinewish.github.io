@@ -9,6 +9,8 @@ MyGame.Boot.prototype = {
     this.load.image('preloadbar', 'assets/images/preloader-bar.png');
   },
   create: function() {
+    this.game.scale.pageAlignHorizontally = true;
+    this.game.scale.pageAlignVertically = true;
     //loading screen will have a white background
     this.game.stage.backgroundColor = '#fff';
 
