@@ -913,7 +913,7 @@
                  "name":"",
                  "properties":
                     {
-                     "path":"[[44,536],[200,525]]",
+                     "path":"[[44,536],[288,480]]",
                      "sprite":"guard",
                      "type":"enemy"
                     },
@@ -1635,6 +1635,94 @@
                  "width":16,
                  "x":32,
                  "y":480
+                }, 
+                {
+                 "gid":2142,
+                 "height":16,
+                 "id":235,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"icecream",
+                     "type":"item"
+                    },
+                 "propertytypes":
+                    {
+                     "sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":16,
+                 "y":480
+                }, 
+                {
+                 "gid":2142,
+                 "height":16,
+                 "id":236,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"icecream",
+                     "type":"item"
+                    },
+                 "propertytypes":
+                    {
+                     "sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":320,
+                 "y":544
+                }, 
+                {
+                 "gid":2142,
+                 "height":16,
+                 "id":237,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"icecream",
+                     "type":"item"
+                    },
+                 "propertytypes":
+                    {
+                     "sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":384,
+                 "y":384
+                }, 
+                {
+                 "gid":2142,
+                 "height":16,
+                 "id":238,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"icecream",
+                     "type":"item"
+                    },
+                 "propertytypes":
+                    {
+                     "sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":320,
+                 "y":112
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1643,7 +1731,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":235,
+ "nextobjectid":239,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,

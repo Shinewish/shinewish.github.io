@@ -64,8 +64,8 @@ MyGame.Game.prototype = {
     this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
     this.gameText.fixedToCamera = true;
     this.fpsStyle = {font: '20px Arial', fill :'green'};
-    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
-    this.fpsText.fixedToCamera = true;
+//    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
+//    this.fpsText.fixedToCamera = true;
 
     this.keyStyle = {font: '20px Arial', fill :'#ffffff'};
     this.keyText = this.game.add.text(10, 45, 'Key: ', this.keyStyle); 
@@ -262,7 +262,6 @@ MyGame.Game.prototype = {
   enterDoor: function(player, door) {
     if (this.player.hasKey) {
       this.gameStyle.fill = 'green';
-      this.gameText.text = 'Well done!';
       this.state.start('Homescreen', true, false, {message:'Well done!', score: this.score});
     }
   },
@@ -275,7 +274,7 @@ MyGame.Game.prototype = {
   },
   refreshStats: function() {
     this.scoreText.text = this.score;
-    this.fpsText.text = 'fps: ' + this.game.time.fps;
+//    this.fpsText.text = 'fps: ' + this.game.time.fps;
     //player hasKey
     if (this.player.hasKey) {
         this.keyIndicator.frame = 0;
@@ -285,7 +284,7 @@ MyGame.Game.prototype = {
   update: function() {
     
     
-    // Score initial properties
+//    // Score initial properties
     if (this.gameText.text != 'You WIN!') {
       this.gameText.text = '';
     };
