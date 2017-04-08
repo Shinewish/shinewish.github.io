@@ -13,7 +13,7 @@ MyGame.Game.prototype = {
 
     //create layer
     this.backgroundlayer = this.map.createLayer('backgroundLayer');
-    this.backgroundlayer.alpha = 0.5;
+    this.backgroundlayer.alpha = 0.8;
     this.blockedLayer = this.map.createLayer('blockedLayer');
 
 
@@ -27,12 +27,16 @@ MyGame.Game.prototype = {
     this.backgroundlayer.resizeWorld();
 
     //create game objects
-    this.createItems();
     this.createDarkPlaces();
+    this.createItems();
     this.createDoors();
+    let result = this.findObjectsByType('key', this.map, 'objectsLayer');
+    this.keyObj = this.game.add.sprite(result[0].x, result[0].y, 'keyImage', 0);
+    this.game.physics.arcade.enable(this.keyObj);
+//    this.keyObj.enableBody = true;
 
     //create player
-    let result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
+    result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
 //    this.player = this.game.add.sprite(result[0].x, result[0].y, 'player');
     this.player = new MyGame.Player(this, this.game, result[0].x, result[0].y, 'player');
     this.game.add.existing(this.player);
@@ -44,6 +48,7 @@ MyGame.Game.prototype = {
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.altCursors = this.game.input.keyboard.addKeys( { 'up': Phaser.Keyboard.W, 'down': Phaser.Keyboard.S, 'left': Phaser.Keyboard.A, 'right': Phaser.Keyboard.D } );
     this.keyChange = this.game.input.keyboard.addKeys({'change': Phaser.Keyboard.C});
+    this.keyFullscreen = this.game.input.keyboard.addKeys({'fullscreen': Phaser.Keyboard.SHIFT});
 
     //create enemies
     this.createEnemies();
@@ -59,9 +64,15 @@ MyGame.Game.prototype = {
     this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
     this.gameText.fixedToCamera = true;
     this.fpsStyle = {font: '20px Arial', fill :'green'};
-    this.fpsText = this.game.add.text(120, 20, '', this.fpsStyle); 
+    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
     this.fpsText.fixedToCamera = true;
-    this.refreshStats();   
+
+    this.keyStyle = {font: '20px Arial', fill :'#ffffff'};
+    this.keyText = this.game.add.text(10, 45, 'Key: ', this.keyStyle); 
+    this.keyText.fixedToCamera = true;
+    this.keyIndicator = this.game.add.sprite(78, 50, 'keyImage', 1);
+    this.keyIndicator.fixedToCamera = true;
+    this.refreshStats(); 
     
 //fullscreen mode
     let isFullScreenEnabled;
@@ -77,7 +88,8 @@ MyGame.Game.prototype = {
 
 //temporary block fullscreen for nondesktop    
     if (isFullScreenEnabled && this.game.device.desktop) { 
-       this.game.input.onDown.add(gofull, this); 
+        //this.game.input.onDown.add(gofull, this);
+        this.keyFullscreen.fullscreen.onDown.add(gofull, this); 
     }
 
     function gofull() {
@@ -207,6 +219,7 @@ MyGame.Game.prototype = {
     //create doors
     this.darkLayer = this.game.add.group();
     this.darkLayer.enableBody = true;
+    this.darkLayer.alpha = 0.8;
     let result = this.findObjectsByType('darkPlace', this.map, 'objectsLayer');
 
     result.forEach(function(element){
@@ -236,16 +249,21 @@ MyGame.Game.prototype = {
   },
 
   collect: function(player, collectable) {
-    console.log('yummy!');
-    this.score = this.score + 10;
+    if (collectable == this.keyObj) {
+        player.hasKey = 1;
+    } else {        
+        console.log('yummy!');
+        this.score = this.score + 10;
+    }
 
     //remove sprite
     collectable.destroy();
   },
   enterDoor: function(player, door) {
-    if (this.score == 100) {
+    if (this.player.hasKey) {
       this.gameStyle.fill = 'green';
-      this.gameText.text = 'You WIN!';
+      this.gameText.text = 'Well done!';
+      this.state.start('Homescreen', true, false, {message:'Well done!', score: this.score});
     }
   },
   dissapear: function(player) {
@@ -256,8 +274,12 @@ MyGame.Game.prototype = {
     this.state.start('Homescreen', true, false, 'Game over!');
   },
   refreshStats: function() {
-      this.scoreText.text = this.score;
-      this.fpsText.text = 'FPS: ' + this.game.time.fps;
+    this.scoreText.text = this.score;
+    this.fpsText.text = 'fps: ' + this.game.time.fps;
+    //player hasKey
+    if (this.player.hasKey) {
+        this.keyIndicator.frame = 0;
+    }
   },
 
   update: function() {
@@ -265,12 +287,13 @@ MyGame.Game.prototype = {
     
     // Score initial properties
     if (this.gameText.text != 'You WIN!') {
-      this.gameText.text = ''
+      this.gameText.text = '';
     };
     //collision
     this.game.physics.arcade.collide(this.player, this.blockedLayer);
     this.game.physics.arcade.collide(this.enemies, this.blockedLayer);
     //this.game.physics.arcade.overlap(this.player, this.enemies, this.collect, null, this);
+    this.game.physics.arcade.overlap(this.player, this.keyObj, this.collect, null, this);
     this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
     this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
     if (this.game.physics.arcade.overlap(this.player, this.darkLayer)) {
@@ -335,17 +358,7 @@ MyGame.Game.prototype = {
         } else {
             this.player.body.velocity.x = 0;
         }
-        // if (changePressed) {
-        //   changeTexture(this.player);
-        //   function changeTexture(player) {
-        //     if (player.texture.baseTexture.source.name == 'player') {
-        //       player.loadTexture('cat', 0);
-        //     } else {
-        //       player.loadTexture('player', 0);
-        //     }
-        //   }
-        // }  //change to another frame of the spritesheet
-        // if (fire){fire_now(); player.loadTexture('mario', 8); }
+
         if (this.game.input.totalActivePointers == 0 || this.game.input.activePointer.isMouse) {
             changePressed = false; 
             rightPressed = false; 
@@ -354,6 +367,7 @@ MyGame.Game.prototype = {
             upPressed = false;
         } //this works around a "bug" where a button gets stuck in pressed state
       }
+
   },
 
 };

@@ -1,7 +1,14 @@
 var MyGame = MyGame || {};
 
-let h = 360;    
-let w = h * window.innerWidth / window.innerHeight;
+let h;
+let w;
+if (window.innerWidth >= window.innerHeight) {
+    w = 360;    
+    h = w * window.innerHeight / window.innerWidth;
+} else {
+    h = 360;    
+    w = h * window.innerWidth / window.innerHeight;
+}
 
 MyGame.game = new Phaser.Game(w, h, Phaser.AUTO, '');
 

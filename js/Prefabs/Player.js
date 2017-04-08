@@ -21,11 +21,8 @@ MyGame.Player = function(wld, game, x, y, type) {
 
 	this.direction = 90; //(0, 90, 180, 270)
 	this.appearance = 'girl';//cat;
-/*	this.getDirect = () => {
-		return this.game.math.angleBetween(this.x, this.y, this.xDest, this.yDest); 
-	}*/
 
-	// vision
+    this.hasKey = 0;
 };
 
 MyGame.Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -33,7 +30,7 @@ MyGame.Player.prototype.constructor = MyGame.Player;
 
 MyGame.Player.prototype.update = function() {
 	if (this.isHiding) {
-		this.alpha = 0.3;
+		this.alpha = 0.6;
 		this.visibility = 0;
 	} else if (this.wld.player.texture.baseTexture.source.name == 'cat') {
 		this.alpha = 1;
@@ -42,8 +39,8 @@ MyGame.Player.prototype.update = function() {
 	    this.alpha = 1;
 	    this.visibility = 1;
 	}
-	//player movement
 
+    //player movement
 	if (this.game.device.desktop) {
 	    if (this.wld.cursors.up.isDown || this.wld.altCursors.up.isDown) {
 	    	this.wld.player.body.velocity.y = -1 * this.wld.player.speed;
