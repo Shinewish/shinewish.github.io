@@ -21,13 +21,13 @@ MyGame.Homescreen.prototype = {
         background.inputEnabled = true;
         background.width = this.game.width;
         background.height = this.game.height;
-        let scaleInd = 352 / this.game.height;
+        let scaleInd = 1;
         let hMessage = 0;
         if (this.game.width < 320) {
             scaleInd = this.game.width / 340;
             hMessage = 352 * (1 - scaleInd) / 2;
-        } else {
-            scaleInd = 352 / this.game.height;
+        } else if ( this.game.height / 352 < 1) {
+            scaleInd = this.game.height / 352;
         };
         
 

@@ -9,13 +9,11 @@ MyGame.Boot.prototype = {
     this.load.image('preloadbar', 'assets/images/preloader-bar.png');
   },
   create: function() {
-    this.game.scale.pageAlignHorizontally = true;
-    this.game.scale.pageAlignVertically = true;
     //loading screen will have a white background
     this.game.stage.backgroundColor = '#fff';
 
     //scaling options
-    this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
     
     //have the game centered horizontally
