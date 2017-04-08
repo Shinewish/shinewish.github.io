@@ -55,7 +55,7 @@ MyGame.Game.prototype = {
     
     //create score
     this.score = 0;
-    this.style = {font: '20px Arial', fill :'#ffffff'};
+    this.style = {font: '20px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
     this.scoreString = this.game.add.text(10, 20, 'Score:', this.style);
     this.scoreText = this.game.add.text(80, 20, '', this.style); 
     this.scoreText.fixedToCamera = true;
@@ -67,11 +67,12 @@ MyGame.Game.prototype = {
 //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
 //    this.fpsText.fixedToCamera = true;
 
-    this.keyStyle = {font: '20px Arial', fill :'#ffffff'};
+    this.keyStyle = {font: '20px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
     this.keyText = this.game.add.text(10, 45, 'Key: ', this.keyStyle); 
     this.keyText.fixedToCamera = true;
-    this.keyIndicator = this.game.add.sprite(78, 50, 'keyImage', 1);
+    this.keyIndicator = this.game.add.sprite(78, 53, 'keyImage', 1);
     this.keyIndicator.fixedToCamera = true;
+    this.keyIndicator.alpha = 0.5;
     this.refreshStats(); 
     
 //fullscreen mode
@@ -278,6 +279,7 @@ MyGame.Game.prototype = {
     //player hasKey
     if (this.player.hasKey) {
         this.keyIndicator.frame = 0;
+        this.keyIndicator.alpha = 1;
     }
   },
 
