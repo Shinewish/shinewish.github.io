@@ -32,7 +32,8 @@ MyGame.Preload.prototype = {
     this.load.spritesheet('enemyVision3', 'assets/images/visionEnemy3.png', 72, 70, 2);
     this.load.image('rat', 'assets/images/rat.png');
     this.load.image('gold', 'assets/images/gold.png');
-    this.load.image('browndoor', 'assets/images/browndoor.png');
+    this.load.image('exit', 'assets/images/exit.png');
+    this.load.image('door', 'assets/images/door.png');
     this.load.image('darkPlace', 'assets/images/darkPlace5.png');
         //gamepad buttons
     this.load.spritesheet('buttonvertical', 'assets/buttons/button-vertical.png',32,32);

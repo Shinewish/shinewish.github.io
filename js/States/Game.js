@@ -6,6 +6,8 @@ MyGame.Game = function(){};
 
 MyGame.Game.prototype = {
     create: function() {
+
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.map = this.game.add.tilemap('level1');
 
         //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
@@ -17,8 +19,7 @@ MyGame.Game.prototype = {
         this.blockedLayer = this.map.createLayer('blockedLayer');
 
 
-    //  fps
-        this.game.time.advancedTiming = true;
+
         
         //collision on blockedLayer
         this.map.setCollisionBetween(1, 2000, true, 'blockedLayer');
@@ -33,9 +34,12 @@ MyGame.Game.prototype = {
         this.game.groups = [];
         this.createItems('chest');
         this.createItems('item');
-        this.createDoors();
         this.createItems('key');
+        this.createDoors();
+        this.createExit();
 
+    //  fps
+        this.game.time.advancedTiming = true;
         // let result = this.findObjectsByType('key', this.map, 'objectsLayer');
         // this.keyObj = this.game.add.sprite(result[0].x, result[0].y, 'keyImage', 0);
         // this.game.physics.arcade.enable(this.keyObj);        
@@ -48,6 +52,10 @@ MyGame.Game.prototype = {
     //    this.player = this.game.add.sprite(result[0].x, result[0].y, 'player');
         this.player = new MyGame.Player(this, this.game, result[0].x, result[0].y, 'player');
         this.game.add.existing(this.player);
+        this.game.physics.arcade.enable(this.player);
+
+        //  Player physics properties. Give the little guy a slight bounce.
+        this.player.body.collideWorldBounds = true;
 
         //the camera will follow the player in the world
         this.game.camera.follow(this.player);
@@ -67,11 +75,13 @@ MyGame.Game.prototype = {
         function useIt() {
             this.game.groups.forEach(function(group){
                 this.game.physics.arcade.overlap(this.player, this.game[group], this.collect, null, this);
-        }, this);
-
-            // this.game.physics.arcade.overlap(this.player, this.chests, this.collect, null, this);
-            // this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
-            // this.game.physics.arcade.overlap(this.player, this.keys, this.collect, null, this);
+            }, this);
+            let x = this.game.physics.arcade.overlap(this.player, this.game.doors, this.collect, null, this);
+            this.game.doors.forEach(function(door) {
+                if (this.game.math.distance(door.x, door.y, this.player.x, this.player.y) < 20) {
+                    this.collect(this.player, door);
+                } 
+            }, this);
         }
 
     
@@ -231,6 +241,22 @@ MyGame.Game.prototype = {
         el.message.anchor.setTo(0.5,0);
     }, this);
   },
+    createDoors: function() {
+        //create items
+        this.game.groups.unshift('doors');
+        this.game.doors = this.game.add.group();
+        this.game.doors.enableBody = true;
+        let result = this.findObjectsByType('door', this.map, 'objectsLayer');
+        result.forEach(function(element){
+            let el = this.createFromTiledObject(element, this.game.doors);
+            this.game.physics.arcade.enable(el);
+            el.body.collideWorldBounds = true;
+            el.body.immovable = true;
+            //let style = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+            el.message = this.game.add.text(element.x, element.y - 15, '', this.itemTextStyle);
+            el.message.anchor.setTo(0.5,0);
+        }, this);
+    },
   createEnemies: function() {
     //create items
     this.enemies = this.game.add.group();
@@ -242,18 +268,17 @@ MyGame.Game.prototype = {
     }, this);
 
   },
-  createDoors: function() {
-    //create doors
-    this.doors = this.game.add.group();
-    this.doors.enableBody = true;
-    let result = this.findObjectsByType('door', this.map, 'objectsLayer');
+  createExit: function() {
+    //create exits
+    this.game.exits = this.game.add.group();
+    this.game.exits.enableBody = true;
+    let result = this.findObjectsByType('exit', this.map, 'objectsLayer');
 
     result.forEach(function(element){
-      this.createFromTiledObject(element, this.doors);
+      this.createFromTiledObject(element, this.game.exits);
     }, this);
   },  
   createDarkPlaces: function() {
-    //create doors
     this.darkLayer = this.game.add.group();
     this.darkLayer.enableBody = true;
     this.darkLayer.alpha = 0.4;
@@ -289,7 +314,7 @@ MyGame.Game.prototype = {
 
   onItem: function(player, collectable) {
     let devKey = (this.game.device.desktop) ? 'E' : 'Use';
-    let typeWord = (collectable.sprite == 'chest') ? 'open' : 'grab';
+    let typeWord = (collectable.sprite == 'chest' || collectable.sprite == 'door') ? 'open' : 'grab';
     collectable.message.text = 'Press '+ devKey + ' to ' + typeWord + ' ' + collectable.sprite;
     
   },  
@@ -315,10 +340,9 @@ MyGame.Game.prototype = {
         collectable.message.text = '';
         collectable.destroy();
   },
-  enterDoor: function(player, door) {
+  enterExit: function(player, exit) {
     if (this.player.hasKey) {
-      this.gameStyle.fill = 'green';
-      this.state.start('Homescreen', true, false, {message:'Well done!', score: this.score});
+      this.state.start('Homescreen', true, false, {message:'Well done!', score: this.score, time: this.game.timeText.text});
     }
   },
   dissapear: function(player) {
@@ -349,7 +373,7 @@ MyGame.Game.prototype = {
         //Display seconds, add a 0 to the start if less than 10
         result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
 
-        result += "." + milliseconds
+        //result += "." + milliseconds
         this.game.timeText.text = result;
      
     }, 
@@ -371,12 +395,13 @@ MyGame.Game.prototype = {
 
     //collision
     this.game.physics.arcade.collide(this.player, this.blockedLayer);
+    this.game.physics.arcade.collide(this.player, this.game.doors);
     this.game.physics.arcade.collide(this.enemies, this.blockedLayer);
     //this.game.physics.arcade.overlap(this.player, this.enemies, this.collect, null, this);
     //this.game.physics.arcade.overlap(this.player, this.game.keys, this.onItem, null, this);
     //this.game.physics.arcade.overlap(this.player, this.game.items, this.onItem, null, this);
     //this.game.physics.arcade.overlap(this.player, this.game.items, this.onItem, null, this);
-    this.game.physics.arcade.overlap(this.player, this.game.doors, this.enterDoor, null, this);
+    this.game.physics.arcade.overlap(this.player, this.game.exits, this.enterExit, null, this);
     if (this.game.physics.arcade.overlap(this.player, this.darkLayer)) {
       this.player.isHiding = 1;
     } else {
@@ -404,7 +429,7 @@ MyGame.Game.prototype = {
         enemy.vision.frame = 1;
         enemy.xTarg = this.player.x;
         enemy.yTarg = this.player.y;
-        if (this.game.math.distance(enemy.x, enemy.y, this.player.x, this.player.y) < 20) {
+        if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.player.x, this.player.y) < 25) {
           this.isFound();
         }
       } else {
