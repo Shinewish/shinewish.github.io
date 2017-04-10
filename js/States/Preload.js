@@ -21,7 +21,8 @@ MyGame.Preload.prototype = {
     
     this.load.spritesheet('player', 'assets/images/player.png', 14, 16, 2);
     this.load.spritesheet('cat', 'assets/images/bat.png', 16, 12, 2);
-    this.load.spritesheet('keyImage', 'assets/images/key.png', 16, 16, 2);
+    this.load.spritesheet('key', 'assets/images/key.png', 16, 16, 2);
+    this.load.spritesheet('chest', 'assets/images/chestGray.png', 16, 15, 2);
 
     this.load.spritesheet('guard', 'assets/images/enemy.png', 16, 16, 2);
     this.load.spritesheet('bat', 'assets/images/ghost.png', 16, 16, 2);
@@ -30,9 +31,9 @@ MyGame.Preload.prototype = {
     this.load.spritesheet('enemyVision2', 'assets/images/visionEnemy2.png', 60, 60, 2);
     this.load.spritesheet('enemyVision3', 'assets/images/visionEnemy3.png', 72, 70, 2);
     this.load.image('rat', 'assets/images/rat.png');
-    this.load.image('icecream', 'assets/images/gold.png');
+    this.load.image('gold', 'assets/images/gold.png');
     this.load.image('browndoor', 'assets/images/browndoor.png');
-    this.load.image('darkPlace', 'assets/images/darkPlace4.png');
+    this.load.image('darkPlace', 'assets/images/darkPlace5.png');
         //gamepad buttons
     this.load.spritesheet('buttonvertical', 'assets/buttons/button-vertical.png',32,32);
     this.load.spritesheet('buttonhorizontal', 'assets/buttons/button-horizontal.png',32,32);
