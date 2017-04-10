@@ -43,7 +43,8 @@ MyGame.Preload.prototype = {
     this.load.spritesheet('buttonhorizontal', 'assets/buttons/button-horizontal.png',32,32);
     this.load.spritesheet('buttondiagonal', 'assets/buttons/button-diagonal.png',32,32);
     this.load.spritesheet('buttonfire', 'assets/buttons/button-round-a.png',64,64);
-    this.load.spritesheet('buttonChange', 'assets/buttons/buttonB.png',64,64);
+    this.load.spritesheet('buttonUse', 'assets/buttons/buttonB.png',64,64);
+    this.load.spritesheet('buttonChange', 'assets/buttons/buttonB.png',32,32);
   },
   create: function() {
     this.state.start('Homescreen');

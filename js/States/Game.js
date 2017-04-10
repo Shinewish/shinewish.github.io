@@ -48,19 +48,6 @@ MyGame.Game.prototype = {
         // this.keyObj.message.anchor.setTo(0.5,0);
     //    this.keyObj.enableBody = true;
 
-        //create player
-        result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
-    //    this.player = this.game.add.sprite(result[0].x, result[0].y, 'player');
-        this.player = new MyGame.Player(this, this.game, result[0].x, result[0].y, 'player', result[0].properties.room);
-        this.game.add.existing(this.player);
-        this.game.physics.arcade.enable(this.player);
-
-        //  Player physics properties. Give the little guy a slight bounce.
-        this.player.body.collideWorldBounds = true;
-
-        //the camera will follow the player in the world
-        this.game.camera.follow(this.player);
-
         // CONTROLS BLOCK
         //move player with cursor keys
         this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -72,18 +59,8 @@ MyGame.Game.prototype = {
         this.keyFullscreen = this.game.input.keyboard.addKeys({'fullscreen': Phaser.Keyboard.SHIFT});
 
         //use key
-        this.keyUse.use.onDown.add(useIt, this);
-        function useIt() {
-            this.game.groups.forEach(function(group){
-                this.game.physics.arcade.overlap(this.player, this.game[group], this.collect, null, this);
-            }, this);
-            let x = this.game.physics.arcade.overlap(this.player, this.game.doors, this.collect, null, this);
-            this.game.doors.forEach(function(door) {
-                if (this.game.math.distance(door.x, door.y, this.player.x, this.player.y) < 32) {
-                    this.openDoor(this.player, door);
-                } 
-            }, this);
-        }
+        this.keyUse.use.onDown.add(this.useIt, this);
+
 
     
 
@@ -123,7 +100,6 @@ MyGame.Game.prototype = {
         //create enemies
         this.createEnemies();
         this.createFogOfWar();
-        this.game.openRooms = [this.player.room];
         
         //create score
         this.score = 0;
@@ -135,7 +111,7 @@ MyGame.Game.prototype = {
         this.gameStyle = {font: '50px Arial', fill :'red'};
         this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
         this.gameText.fixedToCamera = true;
-        this.game.timeText = this.game.add.text(10, 80, "00:00", this.style); 
+        this.game.timeText = this.game.add.text(this.game.width - 70, 20, "00:00", this.style); 
         this.game.timeText.fixedToCamera = true;
     //    this.fpsStyle = {font: '20px Arial', fill :'green'};
     //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
@@ -147,7 +123,7 @@ MyGame.Game.prototype = {
         this.keyIndicator.fixedToCamera = true;
         this.keyIndicator.alpha = 0.5;
 
-        this.refreshStats();
+        //this.refreshStats();
         this.game.startTime = this.game.time.time;
 
         //create touch controls
@@ -160,25 +136,20 @@ MyGame.Game.prototype = {
             this.w = this.game.width;
             this.h = this.game.height;
 
-            buttonChange = this.game.add.button(this.w - 80, this.h - 80, 'buttonChange', null, this, 1, 0, 1, 0);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
+            buttonUse = this.game.add.button(this.w - 80, this.h - 80, 'buttonUse', null, this, 1, 0, 1, 0);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
+            buttonUse.fixedToCamera = true;  //our buttons should stay on the same place  
+            buttonUse.events.onInputOver.add(this.useIt, this);
+            buttonUse.events.onInputOut.add(function(){usePressed=false;});
+            buttonUse.events.onInputDown.add(this.useIt, this);
+            buttonUse.events.onInputUp.add(function(){usePressed=false;});
+            
+            buttonChange = this.game.add.button(this.w - 40, 20, 'buttonChange', null, this, 0, 1, 0, 1);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
+            buttonChange.alpha = 0;
             buttonChange.fixedToCamera = true;  //our buttons should stay on the same place  
-            buttonChange.events.onInputOver.add(useIt, this);
+            buttonChange.events.onInputOver.add(this.changeTexture, this);
             buttonChange.events.onInputOut.add(function(){changePressed=false;});
-            buttonChange.events.onInputDown.add(useIt, this);
+            buttonChange.events.onInputDown.add(this.changeTexture, this);
             buttonChange.events.onInputUp.add(function(){changePressed=false;});
-            // buttonChange = this.game.add.button(this.w - 80, this.h - 80, 'buttonChange', null, this, 0, 1, 0, 1);  //this.game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
-            // buttonChange.fixedToCamera = true;  //our buttons should stay on the same place  
-            // buttonChange.events.onInputOver.add(changeTexture, this);
-            // buttonChange.events.onInputOut.add(function(){changePressed=false;});
-            // buttonChange.events.onInputDown.add(changeTexture, this);
-            // buttonChange.events.onInputUp.add(function(){changePressed=false;});
-            function changeTexture() {
-              if (this.player.texture.baseTexture.source.name == 'player') {
-                this.player.loadTexture('cat', 0);
-              } else {
-                this.player.loadTexture('player', 0);
-              }
-            }
 
             buttonUpLeft = this.game.add.button(0, this.h - 96, 'button', null, this, 3, 0, 3, 0);
             buttonUpLeft.fixedToCamera = true;
@@ -236,7 +207,46 @@ MyGame.Game.prototype = {
             buttonBottomRight.events.onInputDown.add(function(){rightPressed=true;downPressed=true;});
             buttonBottomRight.events.onInputUp.add(function(){rightPressed=false;downPressed=false;});
         }
+
+            //create player
+        result = this.findObjectsByType('playerStart', this.map, 'objectsLayer');
+    //    this.player = this.game.add.sprite(result[0].x, result[0].y, 'player');
+        this.player = new MyGame.Player(this, this.game, result[0].x, result[0].y, 'player', result[0].properties.room);
+        this.game.add.existing(this.player);
+        this.game.physics.arcade.enable(this.player);
+
+        //  Player physics properties. Give the little guy a slight bounce.
+        this.player.body.collideWorldBounds = true;
+        this.player.body.setSize(10, 10, 3, 3);
+
+        this.player.message1 = this.game.add.text(this.player.x, this.player.y - 30, '', this.itemTextStyle);
+        this.player.message1.anchor.setTo(0.5,0);
+        this.player.message2 = this.game.add.text(this.player.x, this.player.y - 15, '', this.itemTextStyle);
+        this.player.message2.anchor.setTo(0.5,0);
+
+        //the camera will follow the player in the world
+        this.game.camera.follow(this.player);
+
+        this.game.openRooms = [this.player.room];
   },
+            changeTexture: function() {
+              if (this.player.texture.baseTexture.source.name == 'player') {
+                this.player.loadTexture('cat', 0);
+              } else {
+                this.player.loadTexture('player', 0);
+              }
+            },
+          useIt: function() {
+            this.game.groups.forEach(function(group){
+                this.game.physics.arcade.overlap(this.player, this.game[group], this.collect, null, this);
+            }, this);
+            let x = this.game.physics.arcade.overlap(this.player, this.game.doors, this.collect, null, this);
+            this.game.doors.forEach(function(door) {
+                if (this.game.math.distance(door.x, door.y, this.player.x, this.player.y) < 32) {
+                    this.openDoor(this.player, door);
+                } 
+            }, this);
+        },
     createFogOfWar: function() {
         this.fogLayer = this.game.add.group();
         this.fogLayer.enableBody = true;
@@ -261,8 +271,10 @@ MyGame.Game.prototype = {
     result.forEach(function(element){
         let el = this.createFromTiledObject(element, this.game[type + 's']);
         //let style = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
-        el.message = this.game.add.text(element.x, element.y - 15, '', this.itemTextStyle);
-        el.message.anchor.setTo(0.5,0);
+        el.message1 = this.game.add.text(element.x, element.y - 30, '', this.itemTextStyle);
+        el.message1.anchor.setTo(0.5,0);
+        el.message2 = this.game.add.text(element.x, element.y - 15, '', this.itemTextStyle);
+        el.message2.anchor.setTo(0.5,0);
     }, this);
   },
     createDoors: function() {
@@ -277,8 +289,11 @@ MyGame.Game.prototype = {
             el.body.collideWorldBounds = true;
             el.body.immovable = true;
             //let style = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
-            el.message = this.game.add.text(element.x, element.y - 15, '', this.itemTextStyle);
-            el.message.anchor.setTo(0.5,0);
+            el.message1 = this.game.add.text(element.x, element.y - 30, '', this.itemTextStyle);
+            el.message1.anchor.setTo(0.5,0);
+            el.message2 = this.game.add.text(element.x, element.y - 15, '', this.itemTextStyle);
+            el.message2.anchor.setTo(0.5,0);
+
         }, this);
     },
   createEnemies: function() {
@@ -337,10 +352,18 @@ MyGame.Game.prototype = {
   },
 
   onItem: function(player, collectable) {
-    let devKey = (this.game.device.desktop) ? 'E' : 'Use';
+    let devKey = (this.game.device.desktop) ? 'E' : 'B';
     let typeWord = (collectable.sprite == 'chest' || collectable.sprite == 'door') ? 'open' : 'grab';
-    collectable.message.text = 'Press '+ devKey + ' to ' + typeWord + ' ' + collectable.sprite;
-    
+    if (collectable.sprite == 'gold') {
+        this.score = this.score + 10;
+        //remove sprite
+        collectable.message1.text = '';
+        collectable.message2.text = '';
+        collectable.destroy();
+    } else {
+        this.player.message1.text = 'Press '+ devKey + ' to';
+        this.player.message2.text = typeWord + ' ' + collectable.sprite;
+    }
   },  
   collect: function(player, collectable) {
         if (collectable.type == 'chest') {
@@ -351,8 +374,10 @@ MyGame.Game.prototype = {
             Object.keys(inside).forEach(function(key){
                 sprite[key] = inside[key];
             });
-            sprite.message = this.game.add.text(sprite.x, sprite.y - 15, '', this.itemTextStyle);
-            sprite.message.anchor = (0.5, 0);
+            sprite.message1 = this.game.add.text(sprite.x, sprite.y - 35, '', this.itemTextStyle);
+            sprite.message1.anchor = (0.5, 0);
+            sprite.message2 = this.game.add.text(sprite.x, sprite.y - 15, '', this.itemTextStyle);
+            sprite.message2.anchor = (0.5, 0);
         } else if (collectable.type == 'key') {
             player.hasKey = 1;
         } else {        
@@ -361,7 +386,8 @@ MyGame.Game.prototype = {
         }
     
         //remove sprite
-        collectable.message.text = '';
+        collectable.message1.text = '';
+        collectable.message2.text = '';
         collectable.destroy();
   },
     openDoor: function(player, door) {
@@ -374,12 +400,16 @@ MyGame.Game.prototype = {
         }, this);
     
         //remove sprite
-        door.message.text = '';
+        door.message1.text = '';
+        door.message2.text = '';
         door.destroy();
     },
   enterExit: function(player, exit) {
     if (this.player.hasKey) {
       this.state.start('Homescreen', true, false, {message:'Well done!', score: this.score, time: this.game.timeText.text});
+    } else {
+        this.player.message1.text = 'You have first';
+        this.player.message2.text = 'to find the key!';
     }
   },
   dissapear: function(player) {
@@ -434,9 +464,16 @@ MyGame.Game.prototype = {
       this.gameText.text = '';
     };
     
+    this.player.message1.text = '';
+    this.player.message2.text = '';
+    this.player.message1.x = this.player.x;
+    this.player.message1.y = this.player.y - 30;    
+    this.player.message2.x = this.player.x;
+    this.player.message2.y = this.player.y - 15;
     this.game.groups.forEach(function(group){
         this.game[group].forEach(function(element){
-            element.message.text = '';
+            element.message1.text = '';
+            element.message2.text = '';
         });
         this.game.physics.arcade.overlap(this.player, this.game[group], this.onItem, null, this);
     }, this);
@@ -514,6 +551,7 @@ MyGame.Game.prototype = {
         }
 
         if (this.game.input.totalActivePointers == 0 || this.game.input.activePointer.isMouse) {
+            usePressed = false;
             changePressed = false; 
             rightPressed = false; 
             leftPressed = false; 

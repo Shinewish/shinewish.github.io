@@ -26665,7 +26665,7 @@
                  "name":"",
                  "properties":
                     {
-                     "room":"1",
+                     "room":"6",
                      "type":"playerStart"
                     },
                  "propertytypes":
@@ -26677,8 +26677,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":48,
-                 "y":48
+                 "x":178.666666666667,
+                 "y":254.666666666667
                 }, 
                 {
                  "gid":2007,
@@ -27225,30 +27225,6 @@
                 {
                  "gid":442,
                  "height":16,
-                 "id":2196,
-                 "name":"",
-                 "properties":
-                    {
-                     "rooms":"[3,1]",
-                     "sprite":"door",
-                     "type":"door"
-                    },
-                 "propertytypes":
-                    {
-                     "rooms":"string",
-                     "sprite":"string",
-                     "type":"string"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":80,
-                 "y":48
-                }, 
-                {
-                 "gid":442,
-                 "height":16,
                  "id":2197,
                  "name":"",
                  "properties":
@@ -27413,6 +27389,30 @@
                  "width":16,
                  "x":288,
                  "y":192
+                }, 
+                {
+                 "gid":442,
+                 "height":16,
+                 "id":2204,
+                 "name":"",
+                 "properties":
+                    {
+                     "rooms":"[1,3]",
+                     "sprite":"door",
+                     "type":"door"
+                    },
+                 "propertytypes":
+                    {
+                     "rooms":"string",
+                     "sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -27421,7 +27421,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":2204,
+ "nextobjectid":2205,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,

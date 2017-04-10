@@ -18,7 +18,8 @@ if (!MyGame.game.device.desktop) {
     var rightPressed = false;
     var downPressed = false;
     var leftPressed = false;
-    var changePressed = false; 
+    var changePressed = false;
+    var usePressed = false;
 }
 
 MyGame.game.state.add('Boot', MyGame.Boot);
