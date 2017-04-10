@@ -1,6 +1,6 @@
 var MyGame = MyGame || {};
 
-MyGame.Player = function(wld, game, x, y, type) {
+MyGame.Player = function(wld, game, x, y, type, room) {
 	Phaser.Sprite.call(this, game, x, y, type/*, idle frame*/);
 	this.animations.add('go', [1, 0], 4, false);
 
@@ -8,6 +8,7 @@ MyGame.Player = function(wld, game, x, y, type) {
 	this.game = game;
 	this.game.physics.arcade.enable(this);
 	this.isHiding = 0;
+    this.room = parseInt(room);
 
 	// [2,3] - animation frames
 	// 4 - FPS

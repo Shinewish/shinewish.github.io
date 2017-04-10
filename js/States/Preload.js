@@ -35,12 +35,15 @@ MyGame.Preload.prototype = {
     this.load.image('exit', 'assets/images/exit.png');
     this.load.image('door', 'assets/images/door.png');
     this.load.image('darkPlace', 'assets/images/darkPlace5.png');
+    this.load.image('fog', 'assets/images/darkPlace5.png');
+
         //gamepad buttons
+    this.load.spritesheet('button', 'assets/buttons/button.png',32,32);
     this.load.spritesheet('buttonvertical', 'assets/buttons/button-vertical.png',32,32);
     this.load.spritesheet('buttonhorizontal', 'assets/buttons/button-horizontal.png',32,32);
     this.load.spritesheet('buttondiagonal', 'assets/buttons/button-diagonal.png',32,32);
     this.load.spritesheet('buttonfire', 'assets/buttons/button-round-a.png',64,64);
-    this.load.spritesheet('buttonChange', 'assets/buttons/button-round-b.png',64,64);
+    this.load.spritesheet('buttonChange', 'assets/buttons/buttonB.png',64,64);
   },
   create: function() {
     this.state.start('Homescreen');
