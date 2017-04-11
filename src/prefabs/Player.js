@@ -19,7 +19,7 @@ export default class extends Phaser.Sprite {
         this.isHiding = 0;
         this.room = parseInt(room);
 
-        this.speed = 112;
+        this.speed = 102;
         this.visibility = 1;
         this.isSeen = 0;
 

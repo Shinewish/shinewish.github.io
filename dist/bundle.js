@@ -3228,7 +3228,7 @@ var _class = function (_Phaser$Sprite) {
         _this.player = player;
 
         if (sprite == 'guard') {
-            _this.speed = 90;
+            _this.speed = 80;
             _this.visRad = 40;
             _this.visRadAlert = 60;
             _this.lookRange = _this.game.math.PI2 / 8;
@@ -3236,7 +3236,7 @@ var _class = function (_Phaser$Sprite) {
             _this.anch = 0;
         }
         if (sprite == 'bat') {
-            _this.speed = 90;
+            _this.speed = 80;
             _this.visRad = 25;
             _this.visRadAlert = 35;
             _this.lookRange = _this.game.math.PI2 / 2;
@@ -4766,7 +4766,7 @@ var _class = function (_Phaser$Sprite) {
         _this.isHiding = 0;
         _this.room = parseInt(room);
 
-        _this.speed = 112;
+        _this.speed = 102;
         _this.visibility = 1;
         _this.isSeen = 0;
 
