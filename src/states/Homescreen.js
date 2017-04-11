@@ -3,38 +3,43 @@ import Phaser from 'phaser'
 
 export default class extends Phaser.State {
     init (properties) {
-        let setScore = (level, score) => {
-            let n = localStorage.getItem("scores");
-            //let n = typeof(localStorage.getItem("scores"));
+        let setTimescores = (level, timescore) => {
+            let n = localStorage.getItem("Timescores");
+            //let n = typeof(localStorage.getItem("Timescores"));
             if (n == null) {
-                this.scores = {
-                    level1: 0,
-                    level2: 0
+                this.Timescores = {
+                    'level 1': '',
+                    'level 2': ''
                 };
-                this.scores[level] = this.scores[level] + score;
+                this.Timescores[level] = timescore;
             } else {
-                this.scores = JSON.parse(localStorage.getItem("scores"));
-                this.scores[level] = this.scores[level] + score;
+                this.Timescores = JSON.parse(localStorage.getItem("Timescores"));
+                if ((this.Timescores[level] > timescore) || (this.Timescores[level] == '')) {
+                    this.Timescores[level] = timescore;
+                    if (this.message) {
+                        this.message = this.message + '\nNew best score!\n' + level + ': ' + timescore;
+                    }
+                }
             }
         }
 
         if (properties) {
             this.message = properties.message;
-            this.score = this.score + properties.score;
-            setScore(properties.level, properties.score);
+            this.timescore = properties.time;
+            setTimescores(properties.level, properties.time);
             this.starterText = 'restart';
         } else {
-            this.score = 0;
-            setScore('level1', 0);
+            this.timescore = '';
+            setTimescores('level 1', '');
             this.starterText = 'start';
         }
-        this.scoresT = '';
-        for (let key in this.scores) {
-            this.scoresT = this.scoresT + key + ': ' + this.scores[key] + '\n';
+        game.TimescoresT = '';
+        for (let key in this.Timescores) {
+            game.TimescoresT = game.TimescoresT + key + ': ' + this.Timescores[key] + '\n';
         }
 
-        let scoresJSON = JSON.stringify(this.scores); 
-        localStorage.setItem("scores", scoresJSON);
+        let TimescoresJSON = JSON.stringify(this.Timescores); 
+        localStorage.setItem("Timescores", TimescoresJSON);
          
         if (!this.game.device.desktop) {
             this.deviceText = 'Touch to ';
@@ -59,7 +64,7 @@ export default class extends Phaser.State {
         };
         
 
-        let homescreenStyle = {font: 'bold 24px Arial', fill: '#fcff00', stroke: 'black', strokeThickness: 3};
+        let homescreenStyle = {font: 'bold 24px Arial', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center'};
         let messageText = this.game.add.text(this.game.width / 2, hMessage + 10 * scaleInd, '', homescreenStyle);
         messageText.anchor.setTo(0.5, 0);
         messageText.scale.setTo(scaleInd);
@@ -67,14 +72,7 @@ export default class extends Phaser.State {
             messageText.text = this.message;
         };        
         
-        let scoreTextBottom = messageText.bottom;
-        //if (!(this.score == 0)) {
-            let scoreText = this.game.add.text(this.game.width / 2, 10 * scaleInd + messageText.bottom, 'Scores: ' + this.scoresT, homescreenStyle); 
-            scoreText.anchor.setTo(0.5, 0);
-            scoreText.scale.setTo(scaleInd);
-            scoreTextBottom = scoreText.bottom;
-        //};
-        let mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + scoreTextBottom, 'Hide, take and RUN!', homescreenStyle); 
+        let mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + messageText.bottom, 'Hide, take and RUN!', homescreenStyle); 
         mottoText.anchor.setTo(0.5, 0);
         mottoText.scale.setTo(scaleInd);
         
@@ -83,13 +81,13 @@ export default class extends Phaser.State {
         goldPile.anchor.setTo(0.5, 0);  
         //goldPile.height = this.game.height;
 
-        let homescreenText = this.game.add.text(this.game.width / 2, 10 * scaleInd + goldPile.bottom , this.deviceText + this.starterText, homescreenStyle); 
+        let homescreenText = this.game.add.text(this.game.width / 2, 10 * scaleInd + goldPile.bottom , this.deviceText + 'continue', homescreenStyle); 
         homescreenText.anchor.setTo(0.5, 0);
         homescreenText.scale.setTo(scaleInd);
 
 
         background.events.onInputDown.add(function() {
-            this.state.start('Game');
-        }, this);    
+            this.state.start('MainMenu');
+        }, this); 
     }
 }

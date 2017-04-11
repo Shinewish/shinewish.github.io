@@ -2,10 +2,12 @@ import Phaser from 'phaser'
 import Enemy from '../prefabs/enemy'
 
 export const changeTexture = (wrld) => {
-    if (wrld.game.player.texture.baseTexture.source.name == 'player') {
+    if (wrld.game.player.texture.baseTexture.source.name == 'male') {
+        wrld.game.player.loadTexture('cat', 0);
+    } else if (wrld.game.player.texture.baseTexture.source.name == 'female') {
         wrld.game.player.loadTexture('cat', 0);
     } else {
-        wrld.game.player.loadTexture('player', 0);
+        wrld.game.player.loadTexture(wrld.game.gender, 0);
     }
 } 
 
@@ -68,8 +70,6 @@ export const createItems = (wrld, type) => {
         //let style = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
         el.message1 = wrld.game.add.text(element.x, element.y - 30, '', wrld.itemTextStyle);
         el.message1.anchor.setTo(0.5,0);
-        el.message2 = wrld.game.add.text(element.x, element.y - 15, '', wrld.itemTextStyle);
-        el.message2.anchor.setTo(0.5,0);
     }, wrld);
 }
 
@@ -86,8 +86,6 @@ export const createDoors = (wrld) => {
         //let style = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
         el.message1 = wrld.game.add.text(element.x, element.y - 30, '', wrld.itemTextStyle);
         el.message1.anchor.setTo(0.5,0);
-        el.message2 = wrld.game.add.text(element.x, element.y - 15, '', wrld.itemTextStyle);
-        el.message2.anchor.setTo(0.5,0);
     }, wrld);
 }
 
@@ -132,8 +130,7 @@ export const onItem = (player, collectable) => {
         // collectable.message2.text = '';
         collectable.destroy();
     } else {
-        wrld.game.player.message1.text = 'Press '+ devKey + ' to';
-        wrld.game.player.message2.text = typeWord + ' ' + collectable.sprite;
+        wrld.game.player.message1.text = 'Press '+ devKey + ' to\n' + typeWord + ' the ' + collectable.sprite;
     }
 }  
 
@@ -180,10 +177,9 @@ export const openDoor = (wrld, player, door) => {
 export const enterExit = (player, exit) => {
     let wrld = player.wld;
     if (wrld.game.player.hasKey) {
-      wrld.state.start('Homescreen', true, false, {message:'Well done!', level: wrld.level, score: wrld.score, time: wrld.game.timeText.text});
+      wrld.state.start('Homescreen', true, false, {message:'Well done!', level: wrld.game.level, score: wrld.score, time: wrld.game.timeText.text});
     } else {
-        wrld.game.player.message1.text = 'You have first';
-        wrld.game.player.message2.text = 'to find the key!';
+        wrld.game.player.message1.text = 'You have first\nto find the key!';
     }   
 }
 
@@ -193,7 +189,7 @@ export const dissapear = (wrld, player) => {
 
 export const isFound = (wrld) => {
     //wrld.gameText.text = 'Got you!';
-    wrld.state.start('Homescreen', true, false, {message: 'Game over!', score: wrld.score});
+    wrld.state.start('Homescreen', true, false, {message: 'Try again later!', level: '', score: 0, time: ''});
 }
 
 export const refreshStats = (wrld) => {
@@ -208,18 +204,20 @@ export const refreshStats = (wrld) => {
 
 export const updateTimer = (wrld) => {
     let time = wrld.game.time.time - wrld.game.startTime;
-    let minutes = Math.floor(time / 60000) % 60;
-    let seconds = Math.floor(time / 1000) % 60;    
-    let milliseconds = Math.floor(time / 10) % 10;    
-
-    //Display minutes, add a 0 to the start if less than 10
-    let result = (minutes < 10) ? "0" + minutes : minutes; 
- 
-    //Display seconds, add a 0 to the start if less than 10
-    result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
-
-    //result += "." + milliseconds
-    wrld.game.timeText.text = result;     
+        let minutes = Math.floor(time / 60000) % 60;
+        if (minutes < 60) {
+            let seconds = Math.floor(time / 1000) % 60;    
+            let milliseconds = Math.floor(time / 10) % 10;    
+        
+            //Display minutes, add a 0 to the start if less than 10
+            let result = (minutes < 10) ? "0" + minutes : minutes; 
+         
+            //Display seconds, add a 0 to the start if less than 10
+            result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
+        
+            //result += "." + milliseconds
+            wrld.game.timeText.text = result;     
+        }
 }
 
 export const clearFog = (wrld) => {
@@ -232,3 +230,25 @@ export const clearFog = (wrld) => {
 
     }, wrld);
 }
+
+export const crtBtn = (game, name, text, sprite, x, y, scaleX, scaleY) => {
+    game[name + 'Btn'] = game.add.sprite(x, y, sprite);
+    game[name + 'Btn'].fixedToCamera = true;
+    game[name + 'Btn'].inputEnabled = true;
+    game[name + 'Btn'].anchor.setTo(0.5);
+    game[name + 'Btn'].scale.setTo(scaleX || 1, scaleY || 1);
+    game[name + 'BtnText'] = game.add.text(x, y, text, game.style);
+    game[name + 'BtnText'].fixedToCamera = true;
+    game[name + 'BtnText'].anchor.setTo(0.5, 0.4);
+}
+
+export const clrMenu = (game) => {
+    game.levelsBtn.destroy();
+    game.scoreboardBtn.destroy();
+    game.optionsBtn.destroy();
+    game.aboutBtn.destroy();
+    game.levelsBtnText.destroy();
+    game.scoreboardBtnText.destroy();
+    game.optionsBtnText.destroy();
+    game.aboutBtnText.destroy();
+};

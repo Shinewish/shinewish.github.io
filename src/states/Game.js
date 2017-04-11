@@ -3,20 +3,23 @@ import Phaser from 'phaser'
 import Player from '../prefabs/player'
 import Enemy from '../prefabs/enemy'
 import { createControls } from '../funs/controls'
+import { pauseIt } from '../funs/pause'
 import { changeTexture, useIt, findObjectsByType, createFromTiledObject, createFogOfWar, createItems, createDoors, createEnemies, createExit, createDarkPlaces} from '../funs/funs'
 import { onItem, collect, openDoor, enterExit, dissapear, isFound, refreshStats, updateTimer, clearFog} from '../funs/funs'
+import { clrMenu, crtBtn} from '../funs/funs'
 
 
 
 
 export default class extends Phaser.State {
-    init () {}
+    init (level) {
+        this.map = this.game.add.tilemap(level);
+        this.game.level = level;       
+    }
     preload () {}
 
     create () {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.map = this.game.add.tilemap('level1');
-        this.level = 'level1';
 
         //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
         this.map.addTilesetImage('tiles', 'gameTiles');
@@ -33,7 +36,7 @@ export default class extends Phaser.State {
         this.backgroundlayer.resizeWorld();
 
         //create game objects
-        this.itemTextStyle = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        this.itemTextStyle = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center'};
 
         this.game.groups = [];
         createItems(this,'chest');
@@ -53,23 +56,27 @@ export default class extends Phaser.State {
         
         //create score
         this.score = 0;
-        this.style = {font: '20px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
-        this.scoreString = this.game.add.text(10, 20, 'Score:', this.style);
-        this.scoreText = this.game.add.text(80, 20, '', this.style); 
+        let fSize = ((30 / 480 * game.camera.width) < 20) ? (30 / 480 * game.camera.width) : 20;
+        this.game.style = {font: fSize + 'px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
+        this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style); 
         this.scoreText.fixedToCamera = true;
         this.scoreString.fixedToCamera = true;
         this.gameStyle = {font: '50px Arial', fill :'red'};
         this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
         this.gameText.fixedToCamera = true;
-        this.game.timeText = this.game.add.text(this.game.width - 70, 20, "00:00", this.style); 
+        this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
+        this.game.timeText.style.font = (fSize + 5) + 'px Arial';
         this.game.timeText.fixedToCamera = true;
+        this.game.timeText.anchor.setTo(0.5, 0);
+
     //    this.fpsStyle = {font: '20px Arial', fill :'green'};
     //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
     //    this.fpsText.fixedToCamera = true;
 
-        this.keyText = this.game.add.text(10, 45, 'Key: ', this.style); 
+        this.keyText = this.game.add.text(fSize / 2, this.scoreText.bottom + fSize / 2, 'Key: ', this.game.style); 
         this.keyText.fixedToCamera = true;
-        this.keyIndicator = this.game.add.sprite(78, 53, 'key', 1);
+        this.keyIndicator = this.game.add.sprite(this.scoreString.right + fSize / 2, this.keyText.top + fSize / 4, 'key', 1);
         this.keyIndicator.fixedToCamera = true;
         this.keyIndicator.alpha = 0.5;
 
@@ -78,7 +85,7 @@ export default class extends Phaser.State {
 
         //create player
         let result = findObjectsByType(this, 'playerStart', this.map, 'objectsLayer');
-        this.game.player = new Player(this, this.game, result[0].x, result[0].y, 'player', result[0].properties.room);
+        this.game.player = new Player(this, this.game, result[0].x, result[0].y, this.game.gender, result[0].properties.room);
         this.game.add.existing(this.game.player);
 
 
@@ -89,6 +96,7 @@ export default class extends Phaser.State {
 
         //create controls
         createControls(this);
+        pauseIt(this, fSize);
     }
 
     update () {
@@ -101,11 +109,8 @@ export default class extends Phaser.State {
         };
         
         this.game.player.message1.text = '';
-        this.game.player.message2.text = '';
         this.game.player.message1.x = this.game.player.x;
-        this.game.player.message1.y = this.game.player.y - 30;    
-        this.game.player.message2.x = this.game.player.x;
-        this.game.player.message2.y = this.game.player.y - 15;
+        this.game.player.message1.y = this.game.player.y - 35;
         this.game.groups.forEach(function(group) {
             // this.game[group].forEach(function(element){
             //     element.message1.text = '';

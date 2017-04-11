@@ -19,7 +19,7 @@ export default class extends Phaser.Sprite {
         this.isHiding = 0;
         this.room = parseInt(room);
 
-        this.speed = 122;
+        this.speed = 82;
         this.visibility = 1;
         this.isSeen = 0;
 
@@ -31,10 +31,12 @@ export default class extends Phaser.Sprite {
         //  Player physics properties. Give the little guy a slight bounce.
         this.body.collideWorldBounds = true;
         this.body.setSize(10, 10, 3, 3);
+        
+        this.textStyle = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center'};
 
-        this.message1 = this.game.add.text(this.x, this.y - 30, '', this.itemTextStyle);
+        this.message1 = this.game.add.text(this.x, this.y - 45, '', this.textStyle);
         this.message1.anchor.setTo(0.5,0);
-        this.message2 = this.game.add.text(this.x, this.y - 15, '', this.itemTextStyle);
+        this.message2 = this.game.add.text(this.x, this.y - 30, '', this.textStyle);
         this.message2.anchor.setTo(0.5,0);
     }
 
