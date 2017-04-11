@@ -34,7 +34,7 @@ export default class extends Phaser.State {
         background.height = this.game.height;
 
         let fSize = ((30 / 480 * game.camera.width) < 20) ? (30 / 480 * game.camera.width) : 20;
-        game.style = {font: fSize + 'px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        game.style = {font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
 // levels
         crtBtn(game, 'levels', 'LEVELS', 'greenBtn', game.camera.width / 2, (game.camera.height) / 8, 0.8, 0.5);
         game.levelsBtn.events.onInputUp.add(function () {            
@@ -140,23 +140,20 @@ export default class extends Phaser.State {
 
             crtBtn(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, (game.camera.height ) * 7 / 8, 0.8, 0.5);
             game.backBtn.events.onInputUp.add(function () {
-                game.paused = false;
                 game.state.start('MainMenu', true, false, {message:'', level: game.level, score: 0, time: ''});                
             });                 
         });
 
 // help
-        crtBtn(game, 'about', 'ABOUT', 'orangeBtn', game.camera.width / 2, (game.camera.height) * 7 / 8, 0.8, 0.5);
+        crtBtn(game, 'about', 'ABOUT', 'redBtn', game.camera.width / 2, (game.camera.height) * 7 / 8, 0.8, 0.5);
         game.aboutBtn.events.onInputUp.add(function () {            
             clrMenu(game);
-    
-    
-            game.aboutTxt = game.add.text(game.width / 2, (game.camera.height) / 8, 'The Thief\n' + 'v2.1.4\n' +' \n' + 'Made by: \n' + 'Aliaksandr Tachko', game.style); 
+        
+            game.aboutTxt = game.add.text(game.width / 2, (game.camera.height) / 16, 'The Thief\n' + 'v2.1.4\n' +' \n' + 'Made by: \n' + 'Aliaksandr Tachko', game.style); 
             game.aboutTxt.anchor.setTo(0.5, 0);
 //        aboutText.scale.setTo(scaleInd);
             crtBtn(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, (game.camera.height) * 7 / 8, 0.8, 0.5);
             game.backBtn.events.onInputUp.add(function () {
-                game.paused = false;
                 game.state.start('MainMenu', true, false, {message:'', level: game.level, score: 0, time: ''});                
             });   
         });/////////////////////////////////        

@@ -36,7 +36,7 @@ export default class extends Phaser.State {
         this.backgroundlayer.resizeWorld();
 
         //create game objects
-        this.itemTextStyle = {font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center'};
+        this.itemTextStyle = {font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center'};
 
         this.game.groups = [];
         createItems(this,'chest');
@@ -52,25 +52,24 @@ export default class extends Phaser.State {
 
         //create enemies
         createEnemies(this);
-        createFogOfWar(this);
-        
+        createFogOfWar(this);        
         //create score
         this.score = 0;
         let fSize = ((30 / 480 * game.camera.width) < 20) ? (30 / 480 * game.camera.width) : 20;
-        this.game.style = {font: fSize + 'px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        this.game.style = {font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
         this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
         this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style); 
         this.scoreText.fixedToCamera = true;
         this.scoreString.fixedToCamera = true;
-        this.gameStyle = {font: '50px Arial', fill :'red'};
+        this.gameStyle = {font: '50px Nevis', fill :'red'};
         this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
         this.gameText.fixedToCamera = true;
         this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
-        this.game.timeText.style.font = (fSize + 5) + 'px Arial';
+        this.game.timeText.style.font = (fSize + 5) + 'px Nevis';
         this.game.timeText.fixedToCamera = true;
         this.game.timeText.anchor.setTo(0.5, 0);
 
-    //    this.fpsStyle = {font: '20px Arial', fill :'green'};
+    //    this.fpsStyle = {font: '20px Nevis', fill :'green'};
     //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
     //    this.fpsText.fixedToCamera = true;
 
@@ -110,7 +109,7 @@ export default class extends Phaser.State {
         
         this.game.player.message1.text = '';
         this.game.player.message1.x = this.game.player.x;
-        this.game.player.message1.y = this.game.player.y - 35;
+        this.game.player.message1.y = this.game.player.y - 45;
         this.game.groups.forEach(function(group) {
             // this.game[group].forEach(function(element){
             //     element.message1.text = '';

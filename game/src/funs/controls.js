@@ -135,7 +135,7 @@ export const createControls = (wrld) => {
         }*/
 
         function gofull() {
-            if (game.scale.isFullScreen)
+            if ((game.scale.isFullScreen) && (game.device.desktop))
             {
                 game.scale.stopFullScreen();
             }

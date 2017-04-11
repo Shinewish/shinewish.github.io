@@ -137,8 +137,10 @@ export const onItem = (player, collectable) => {
 export const collect = (player, collectable, wrld) => {
     if (collectable.type == 'chest') {
         let inside = JSON.parse(collectable.inside);
-        let sprite = player.game[inside.type + 's'].create(collectable.x, collectable.y, inside.sprite);
-
+        let sprite = '';
+        if (player.game[inside.type + 's']) {
+            sprite = player.game[inside.type + 's'].create(collectable.x, collectable.y, inside.sprite);
+        
         //copy all properties to the sprite
         Object.keys(inside).forEach(function(key){
             sprite[key] = inside[key];
@@ -147,10 +149,15 @@ export const collect = (player, collectable, wrld) => {
         // sprite.message1.anchor = (0.5, 0);
         // sprite.message2 = wrld.game.add.text(sprite.x, sprite.y - 15, '', wrld.itemTextStyle);
         // sprite.message2.anchor = (0.5, 0);
+        } else {
+            createItems(wrld, inside.type);
+        }
     } else if (collectable.type == 'key') {
         player.hasKey = 1;
-    } else {        
-        console.log('yummy!');
+    } else if (collectable.gem) {
+        player.hasGem = 1;
+        player.wld.score = player.wld.score + 20;
+    } else {
         wrld.score = wrld.score + 10;
     }
 
@@ -176,10 +183,10 @@ export const openDoor = (wrld, player, door) => {
 
 export const enterExit = (player, exit) => {
     let wrld = player.wld;
-    if (wrld.game.player.hasKey) {
+    if (wrld.game.player.hasGem && wrld.game.player.hasKey) {
       wrld.state.start('Homescreen', true, false, {message:'Well done!', level: wrld.game.level, score: wrld.score, time: wrld.game.timeText.text});
     } else {
-        wrld.game.player.message1.text = 'You have first\nto find the key!';
+        wrld.game.player.message1.text = 'You have first to\n find the key and the gem!';
     }   
 }
 

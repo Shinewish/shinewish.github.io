@@ -11,7 +11,7 @@ export default class extends Phaser.Sprite {
         this.player = player;
 
         if (sprite == 'guard') {
-            this.speed = 80;
+            this.speed = 57;
             this.visRad = 40;
             this.visRadAlert = 60;
             this.lookRange = this.game.math.PI2 / 8;
@@ -19,7 +19,7 @@ export default class extends Phaser.Sprite {
             this.anch = 0;
         }
         if (sprite == 'bat') {
-            this.speed = 80;
+            this.speed = 57;
             this.visRad = 25;
             this.visRadAlert = 35;
             this.lookRange = this.game.math.PI2 / 2;

@@ -44,9 +44,10 @@ export default class extends Phaser.State {
         if (!this.game.device.desktop) {
             this.deviceText = 'Touch to ';
         } else {
-            this.deviceText = 'Leftclick to ';
+            this.deviceText = 'Press Space to ';
         }
     }
+
     preload () {}
 
     create () {
@@ -58,13 +59,12 @@ export default class extends Phaser.State {
         let hMessage = 0;
         if (this.game.width < 320) {
             scaleInd = this.game.width / 340;
-            hMessage = 352 * (1 - scaleInd) / 2;
         } else if ( this.game.height / 352 < 1) {
             scaleInd = this.game.height / 352;
         };
         
 
-        let homescreenStyle = {font: 'bold 24px Arial', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center'};
+        let homescreenStyle = {font: 'bold 24px Nevis', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center'};
         let messageText = this.game.add.text(this.game.width / 2, hMessage + 10 * scaleInd, '', homescreenStyle);
         messageText.anchor.setTo(0.5, 0);
         messageText.scale.setTo(scaleInd);
@@ -85,9 +85,14 @@ export default class extends Phaser.State {
         homescreenText.anchor.setTo(0.5, 0);
         homescreenText.scale.setTo(scaleInd);
 
-
-        background.events.onInputDown.add(function() {
+        this.keySpace = this.game.input.keyboard.addKeys({'space': Phaser.Keyboard.SPACEBAR});
+        this.keySpace.space.onDown.add(function() {
             this.state.start('MainMenu');
-        }, this); 
+        }, this);
+        if (!this.game.device.desktop) {
+            background.events.onInputDown.add(function() {
+                this.state.start('MainMenu');
+            }, this); 
+        }
     }
 }

@@ -21,12 +21,14 @@ export const pauseIt = (wrld, fSize) => {
             game.paused = true;
     
             // Then add the menu
-            crtBtn(game, 'resume', 'RESUME', 'greenBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 2 / 7, 0.8, 0.5);
+            crtBtn(game, 'resume', 'RESUME', 'greenBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 1 / 8, 0.8, 0.5);
             game.resumeBtn.events.onInputUp.add(function () {            
                 game.resumeBtn.destroy();
+                game.restartBtn.destroy();
                 game.soundBtn.destroy();
                 game.mMenuBtn.destroy();
                 game.resumeBtnText.destroy();
+                game.restartBtnText.destroy();
                 game.soundBtnText.destroy();
                 game.mMenuBtnText.destroy();
 
@@ -35,13 +37,30 @@ export const pauseIt = (wrld, fSize) => {
                 game.soundtrack.mute = game.mut;
             });
             game.resumeBtn.input.priorityID = 100;
-    
+            
+            crtBtn(game, 'restart', 'RESTART', 'orangeBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 3 / 8, 0.8, 0.5);
+            game.restartBtn.events.onInputUp.add(function () {            
+                game.resumeBtn.destroy();
+                game.restartBtn.destroy();
+                game.soundBtn.destroy();
+                game.mMenuBtn.destroy();
+                game.resumeBtnText.destroy();
+                game.restartBtnText.destroy();
+                game.soundBtnText.destroy();
+                game.mMenuBtnText.destroy();
+
+                // Unpause the game
+                game.paused = false;
+                game.soundtrack.mute = game.mut;
+                game.state.start('Game', true, false, game.level);
+            });
+            game.restartBtn.input.priorityID = 100;    
             // if (!game.soundtrack.mute) {
             // game.mut = false;
             if (game.mut) {
-                crtBtn(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                crtBtn(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
             } else {
-                crtBtn(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                crtBtn(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
             }
 
             let refrSndBtn = function () {
@@ -51,20 +70,20 @@ export const pauseIt = (wrld, fSize) => {
                     game.mut = true;
                     game.soundBtn.destroy();
                     game.soundBtnText.destroy();
-                    crtBtn(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                    crtBtn(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
                     game.soundBtn.events.onInputUp.add(refrSndBtn, this);          
                 } else {
                     // game.mut = false;
                     game.mut = false;
                     game.soundBtn.destroy();
                     game.soundBtnText.destroy();
-                    crtBtn(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                    crtBtn(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
                     game.soundBtn.events.onInputUp.add(refrSndBtn, this);          
                 }
             }
             game.soundBtn.events.onInputUp.add(refrSndBtn, this);          
     
-            crtBtn(game, 'mMenu', 'MAIN MENU', 'redBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 6 / 7, 0.8, 0.5);
+            crtBtn(game, 'mMenu', 'MAIN MENU', 'redBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 7 / 8, 0.8, 0.5);
                 game.mMenuBtn.events.onInputUp.add(function () {
                 game.paused = false;
                 game.state.start('MainMenu', true, false, {message:'', level: game.level, score: 0, time: ''});                

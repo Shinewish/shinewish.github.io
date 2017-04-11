@@ -1744,20 +1744,27 @@ var onItem = exports.onItem = function onItem(player, collectable) {
 var collect = exports.collect = function collect(player, collectable, wrld) {
     if (collectable.type == 'chest') {
         var inside = JSON.parse(collectable.inside);
-        var sprite = player.game[inside.type + 's'].create(collectable.x, collectable.y, inside.sprite);
+        var sprite = '';
+        if (player.game[inside.type + 's']) {
+            sprite = player.game[inside.type + 's'].create(collectable.x, collectable.y, inside.sprite);
 
-        //copy all properties to the sprite
-        Object.keys(inside).forEach(function (key) {
-            sprite[key] = inside[key];
-        });
-        // sprite.message1 = wrld.game.add.text(sprite.x, sprite.y - 35, '', wrld.itemTextStyle);
-        // sprite.message1.anchor = (0.5, 0);
-        // sprite.message2 = wrld.game.add.text(sprite.x, sprite.y - 15, '', wrld.itemTextStyle);
-        // sprite.message2.anchor = (0.5, 0);
+            //copy all properties to the sprite
+            Object.keys(inside).forEach(function (key) {
+                sprite[key] = inside[key];
+            });
+            // sprite.message1 = wrld.game.add.text(sprite.x, sprite.y - 35, '', wrld.itemTextStyle);
+            // sprite.message1.anchor = (0.5, 0);
+            // sprite.message2 = wrld.game.add.text(sprite.x, sprite.y - 15, '', wrld.itemTextStyle);
+            // sprite.message2.anchor = (0.5, 0);
+        } else {
+            createItems(wrld, inside.type);
+        }
     } else if (collectable.type == 'key') {
         player.hasKey = 1;
+    } else if (collectable.gem) {
+        player.hasGem = 1;
+        player.wld.score = player.wld.score + 20;
     } else {
-        console.log('yummy!');
         wrld.score = wrld.score + 10;
     }
 
@@ -1783,10 +1790,10 @@ var openDoor = exports.openDoor = function openDoor(wrld, player, door) {
 
 var enterExit = exports.enterExit = function enterExit(player, exit) {
     var wrld = player.wld;
-    if (wrld.game.player.hasKey) {
+    if (wrld.game.player.hasGem && wrld.game.player.hasKey) {
         wrld.state.start('Homescreen', true, false, { message: 'Well done!', level: wrld.game.level, score: wrld.score, time: wrld.game.timeText.text });
     } else {
-        wrld.game.player.message1.text = 'You have first\nto find the key!';
+        wrld.game.player.message1.text = 'You have first to\n find the key and the gem!';
     }
 };
 
@@ -3228,7 +3235,7 @@ var _class = function (_Phaser$Sprite) {
         _this.player = player;
 
         if (sprite == 'guard') {
-            _this.speed = 80;
+            _this.speed = 57;
             _this.visRad = 40;
             _this.visRadAlert = 60;
             _this.lookRange = _this.game.math.PI2 / 8;
@@ -3236,7 +3243,7 @@ var _class = function (_Phaser$Sprite) {
             _this.anch = 0;
         }
         if (sprite == 'bat') {
-            _this.speed = 80;
+            _this.speed = 57;
             _this.visRad = 25;
             _this.visRadAlert = 35;
             _this.lookRange = _this.game.math.PI2 / 2;
@@ -4594,7 +4601,7 @@ var createControls = exports.createControls = function createControls(wrld) {
             }*/
 
     function gofull() {
-        if (game.scale.isFullScreen) {
+        if (game.scale.isFullScreen && game.device.desktop) {
             game.scale.stopFullScreen();
         } else {
             game.scale.startFullScreen(false);
@@ -4646,12 +4653,14 @@ var pauseIt = exports.pauseIt = function pauseIt(wrld, fSize) {
             game.paused = true;
 
             // Then add the menu
-            (0, _funs.crtBtn)(game, 'resume', 'RESUME', 'greenBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 2 / 7, 0.8, 0.5);
+            (0, _funs.crtBtn)(game, 'resume', 'RESUME', 'greenBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 1 / 8, 0.8, 0.5);
             game.resumeBtn.events.onInputUp.add(function () {
                 game.resumeBtn.destroy();
+                game.restartBtn.destroy();
                 game.soundBtn.destroy();
                 game.mMenuBtn.destroy();
                 game.resumeBtnText.destroy();
+                game.restartBtnText.destroy();
                 game.soundBtnText.destroy();
                 game.mMenuBtnText.destroy();
 
@@ -4661,12 +4670,29 @@ var pauseIt = exports.pauseIt = function pauseIt(wrld, fSize) {
             });
             game.resumeBtn.input.priorityID = 100;
 
+            (0, _funs.crtBtn)(game, 'restart', 'RESTART', 'orangeBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 3 / 8, 0.8, 0.5);
+            game.restartBtn.events.onInputUp.add(function () {
+                game.resumeBtn.destroy();
+                game.restartBtn.destroy();
+                game.soundBtn.destroy();
+                game.mMenuBtn.destroy();
+                game.resumeBtnText.destroy();
+                game.restartBtnText.destroy();
+                game.soundBtnText.destroy();
+                game.mMenuBtnText.destroy();
+
+                // Unpause the game
+                game.paused = false;
+                game.soundtrack.mute = game.mut;
+                game.state.start('Game', true, false, game.level);
+            });
+            game.restartBtn.input.priorityID = 100;
             // if (!game.soundtrack.mute) {
             // game.mut = false;
             if (game.mut) {
-                (0, _funs.crtBtn)(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                (0, _funs.crtBtn)(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
             } else {
-                (0, _funs.crtBtn)(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                (0, _funs.crtBtn)(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
             }
 
             var refrSndBtn = function refrSndBtn() {
@@ -4676,20 +4702,20 @@ var pauseIt = exports.pauseIt = function pauseIt(wrld, fSize) {
                     game.mut = true;
                     game.soundBtn.destroy();
                     game.soundBtnText.destroy();
-                    (0, _funs.crtBtn)(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                    (0, _funs.crtBtn)(game, 'sound', 'SOUND: OFF', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
                     game.soundBtn.events.onInputUp.add(refrSndBtn, this);
                 } else {
                     // game.mut = false;
                     game.mut = false;
                     game.soundBtn.destroy();
                     game.soundBtnText.destroy();
-                    (0, _funs.crtBtn)(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 4 / 7, 0.8, 0.5);
+                    (0, _funs.crtBtn)(game, 'sound', 'SOUND: ON', 'yellowBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 5 / 8, 0.8, 0.5);
                     game.soundBtn.events.onInputUp.add(refrSndBtn, this);
                 }
             };
             game.soundBtn.events.onInputUp.add(refrSndBtn, undefined);
 
-            (0, _funs.crtBtn)(game, 'mMenu', 'MAIN MENU', 'redBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 6 / 7, 0.8, 0.5);
+            (0, _funs.crtBtn)(game, 'mMenu', 'MAIN MENU', 'redBtn', game.camera.x + game.camera.width / 2, game.camera.y + game.camera.height * 7 / 8, 0.8, 0.5);
             game.mMenuBtn.events.onInputUp.add(function () {
                 game.paused = false;
                 game.state.start('MainMenu', true, false, { message: '', level: game.level, score: 0, time: '' });
@@ -4766,7 +4792,7 @@ var _class = function (_Phaser$Sprite) {
         _this.isHiding = 0;
         _this.room = parseInt(room);
 
-        _this.speed = 102;
+        _this.speed = 60;
         _this.visibility = 1;
         _this.isSeen = 0;
 
@@ -4774,12 +4800,13 @@ var _class = function (_Phaser$Sprite) {
         _this.appearance = 'girl'; //bat;
 
         _this.hasKey = 0;
+        _this.hasGem = 0;
 
         //  Player physics properties. Give the little guy a slight bounce.
         _this.body.collideWorldBounds = true;
         _this.body.setSize(10, 10, 3, 3);
 
-        _this.textStyle = { font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
+        _this.textStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
 
         _this.message1 = _this.game.add.text(_this.x, _this.y - 45, '', _this.textStyle);
         _this.message1.anchor.setTo(0.5, 0);
@@ -5032,7 +5059,7 @@ var _class = function (_Phaser$State) {
             this.backgroundlayer.resizeWorld();
 
             //create game objects
-            this.itemTextStyle = { font: '14px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
+            this.itemTextStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
 
             this.game.groups = [];
             (0, _funs.createItems)(this, 'chest');
@@ -5049,24 +5076,23 @@ var _class = function (_Phaser$State) {
             //create enemies
             (0, _funs.createEnemies)(this);
             (0, _funs.createFogOfWar)(this);
-
             //create score
             this.score = 0;
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            this.game.style = { font: fSize + 'px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
+            this.game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
             this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
             this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style);
             this.scoreText.fixedToCamera = true;
             this.scoreString.fixedToCamera = true;
-            this.gameStyle = { font: '50px Arial', fill: 'red' };
+            this.gameStyle = { font: '50px Nevis', fill: 'red' };
             this.gameText = this.game.add.text(80, 120, '', this.gameStyle);
             this.gameText.fixedToCamera = true;
             this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
-            this.game.timeText.style.font = fSize + 5 + 'px Arial';
+            this.game.timeText.style.font = fSize + 5 + 'px Nevis';
             this.game.timeText.fixedToCamera = true;
             this.game.timeText.anchor.setTo(0.5, 0);
 
-            //    this.fpsStyle = {font: '20px Arial', fill :'green'};
+            //    this.fpsStyle = {font: '20px Nevis', fill :'green'};
             //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
             //    this.fpsText.fixedToCamera = true;
 
@@ -5106,7 +5132,7 @@ var _class = function (_Phaser$State) {
 
             this.game.player.message1.text = '';
             this.game.player.message1.x = this.game.player.x;
-            this.game.player.message1.y = this.game.player.y - 35;
+            this.game.player.message1.y = this.game.player.y - 45;
             this.game.groups.forEach(function (group) {
                 // this.game[group].forEach(function(element){
                 //     element.message1.text = '';
@@ -5242,7 +5268,7 @@ var _class = function (_Phaser$State) {
             if (!this.game.device.desktop) {
                 this.deviceText = 'Touch to ';
             } else {
-                this.deviceText = 'Leftclick to ';
+                this.deviceText = 'Press Space to ';
             }
         }
     }, {
@@ -5259,12 +5285,11 @@ var _class = function (_Phaser$State) {
             var hMessage = 0;
             if (this.game.width < 320) {
                 scaleInd = this.game.width / 340;
-                hMessage = 352 * (1 - scaleInd) / 2;
             } else if (this.game.height / 352 < 1) {
                 scaleInd = this.game.height / 352;
             };
 
-            var homescreenStyle = { font: 'bold 24px Arial', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
+            var homescreenStyle = { font: 'bold 24px Nevis', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
             var messageText = this.game.add.text(this.game.width / 2, hMessage + 10 * scaleInd, '', homescreenStyle);
             messageText.anchor.setTo(0.5, 0);
             messageText.scale.setTo(scaleInd);
@@ -5285,9 +5310,15 @@ var _class = function (_Phaser$State) {
             homescreenText.anchor.setTo(0.5, 0);
             homescreenText.scale.setTo(scaleInd);
 
-            background.events.onInputDown.add(function () {
+            this.keySpace = this.game.input.keyboard.addKeys({ 'space': _phaser2.default.Keyboard.SPACEBAR });
+            this.keySpace.space.onDown.add(function () {
                 this.state.start('MainMenu');
             }, this);
+            if (!this.game.device.desktop) {
+                background.events.onInputDown.add(function () {
+                    this.state.start('MainMenu');
+                }, this);
+            }
         }
     }]);
 
@@ -5373,7 +5404,7 @@ var _class = function (_Phaser$State) {
             background.height = this.game.height;
 
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            game.style = { font: fSize + 'px Arial', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
+            game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
             // levels
             (0, _funs.crtBtn)(game, 'levels', 'LEVELS', 'greenBtn', game.camera.width / 2, game.camera.height / 8, 0.8, 0.5);
             game.levelsBtn.events.onInputUp.add(function () {
@@ -5477,22 +5508,20 @@ var _class = function (_Phaser$State) {
 
                 (0, _funs.crtBtn)(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, game.camera.height * 7 / 8, 0.8, 0.5);
                 game.backBtn.events.onInputUp.add(function () {
-                    game.paused = false;
                     game.state.start('MainMenu', true, false, { message: '', level: game.level, score: 0, time: '' });
                 });
             });
 
             // help
-            (0, _funs.crtBtn)(game, 'about', 'ABOUT', 'orangeBtn', game.camera.width / 2, game.camera.height * 7 / 8, 0.8, 0.5);
+            (0, _funs.crtBtn)(game, 'about', 'ABOUT', 'redBtn', game.camera.width / 2, game.camera.height * 7 / 8, 0.8, 0.5);
             game.aboutBtn.events.onInputUp.add(function () {
                 (0, _funs.clrMenu)(game);
 
-                game.aboutTxt = game.add.text(game.width / 2, game.camera.height / 8, 'The Thief\n' + 'v2.1.4\n' + ' \n' + 'Made by: \n' + 'Aliaksandr Tachko', game.style);
+                game.aboutTxt = game.add.text(game.width / 2, game.camera.height / 16, 'The Thief\n' + 'v2.1.4\n' + ' \n' + 'Made by: \n' + 'Aliaksandr Tachko', game.style);
                 game.aboutTxt.anchor.setTo(0.5, 0);
                 //        aboutText.scale.setTo(scaleInd);
                 (0, _funs.crtBtn)(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, game.camera.height * 7 / 8, 0.8, 0.5);
                 game.backBtn.events.onInputUp.add(function () {
-                    game.paused = false;
                     game.state.start('MainMenu', true, false, { message: '', level: game.level, score: 0, time: '' });
                 });
             }); /////////////////////////////////        
@@ -5517,7 +5546,7 @@ exports.default = _class;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5537,89 +5566,93 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _class = function (_Phaser$State) {
-  _inherits(_class, _Phaser$State);
+    _inherits(_class, _Phaser$State);
 
-  function _class() {
-    _classCallCheck(this, _class);
+    function _class() {
+        _classCallCheck(this, _class);
 
-    return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
-  }
-
-  _createClass(_class, [{
-    key: 'init',
-    value: function init() {}
-  }, {
-    key: 'preload',
-    value: function preload() {
-      //show loading screen
-      this.game.stage.backgroundColor = '#fff';
-      this.preloadBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadBg');
-      this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
-      this.preloadBar.anchor.setTo(0.5);
-      this.preloadBar.scale.setTo(2, 1);
-      (0, _utils.centerGameObjects)([this.preloadBg, this.preloadBar]);
-
-      this.load.setPreloadSprite(this.preloadBar);
-
-      //load game assets
-      //Homescreen
-      this.load.image('HomescreenBack', '../../assets/images/safe_image.jpg');
-      this.load.image('goldPile', '../../assets/images/gold-coins-animated-gif.gif');
-
-      //tiles
-      this.load.tilemap('level 1', '../../assets/tilemaps/levelTest.json', null, _phaser2.default.Tilemap.TILED_JSON);
-      this.load.tilemap('level 2', '../../assets/tilemaps/level1.json', null, _phaser2.default.Tilemap.TILED_JSON);
-      this.load.image('gameTiles', '../../assets/images/tiles.png');
-      this.load.image('darkPlace', '../../assets/images/darkPlace5.png');
-      this.load.image('fog', '../../assets/images/darkPlace5.png');
-
-      //player
-      this.load.spritesheet('female', '../../assets/images/female.png', 15, 16, 2);
-      this.load.spritesheet('male', '../../assets/images/male.png', 15, 16, 2);
-      this.load.spritesheet('cat', '../../assets/images/bat.png', 16, 12, 2);
-
-      //objects
-      this.load.spritesheet('key', '../../assets/images/key.png', 16, 16, 2);
-      this.load.spritesheet('gem', '../../assets/images/gem.png', 16, 16, 2);
-      this.load.spritesheet('chest', '../../assets/images/chestGray.png', 16, 15, 2);
-      this.load.image('gold', '../../assets/images/gold.png');
-      this.load.image('exit', '../../assets/images/exit.png');
-      this.load.image('door', '../../assets/images/door3.png');
-
-      //enemies
-      this.load.spritesheet('guard', '../../assets/images/sceleton.png', 16, 16, 2);
-      this.load.spritesheet('bat', '../../assets/images/ghost.png', 16, 16, 2);
-      //    this.load.spritesheet('gorgul', '../../assets/images/gorgul.png', 15, 16, 2);
-      this.load.spritesheet('enemyVision', '../../assets/images/visionEnemy.png', 40, 40, 2);
-      this.load.spritesheet('enemyVision2', '../../assets/images/visionEnemy2.png', 60, 60, 2);
-      this.load.spritesheet('enemyVision3', '../../assets/images/visionEnemy3.png', 72, 70, 2);
-      //    this.load.image('rat', '../../assets/images/rat.png');
-
-      //gamepad buttons
-      this.load.spritesheet('pauseBtn', '../../assets/buttons/pause.png', 50, 50);
-      this.load.spritesheet('greenBtn', '../../assets/buttons/tileGreen_2.png', 208, 108);
-      this.load.spritesheet('yellowBtn', '../../assets/buttons/tileYellow_2.png', 208, 108);
-      this.load.spritesheet('orangeBtn', '../../assets/buttons/tileOrange_2.png', 208, 108);
-      this.load.spritesheet('redBtn', '../../assets/buttons/tileRed_2.png', 208, 108);
-      this.load.spritesheet('button', '../../assets/buttons/button.png', 32, 32);
-      this.load.spritesheet('buttonUse', '../../assets/buttons/buttonB.png', 64, 64);
-      this.load.spritesheet('buttonChange', '../../assets/buttons/buttonB.png', 32, 32);
-
-      this.game.gender = 'male';
-
-      //music
-      this.load.audio('soundtrack', ['./assets/audio/soundtrack2.ogg'], true);
+        return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
     }
-  }, {
-    key: 'create',
-    value: function create() {
-      this.game.soundtrack = this.game.add.audio('soundtrack', 1, true);
-      this.game.soundtrack.play();
-      this.state.start('Homescreen');
-    }
-  }]);
 
-  return _class;
+    _createClass(_class, [{
+        key: 'init',
+        value: function init() {}
+    }, {
+        key: 'preload',
+        value: function preload() {
+            //show loading screen
+            this.game.stage.backgroundColor = '#fff';
+            this.preloadBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadBg');
+            this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
+            this.preloadBar.anchor.setTo(0.5);
+            this.preloadBar.scale.setTo(2, 1);
+            (0, _utils.centerGameObjects)([this.preloadBg, this.preloadBar]);
+
+            this.load.setPreloadSprite(this.preloadBar);
+
+            //load game assets
+            //Homescreen
+            this.load.image('HomescreenBack', './assets/images/safe_image.jpg');
+            this.load.image('goldPile', './assets/images/gold-coins-animated-gif.gif');
+
+            //tiles
+            this.load.tilemap('level 1', './assets/tilemaps/levelTest.json', null, _phaser2.default.Tilemap.TILED_JSON);
+            this.load.tilemap('level 2', './assets/tilemaps/level1.json', null, _phaser2.default.Tilemap.TILED_JSON);
+            this.load.image('gameTiles', './assets/images/tiles.png');
+            this.load.image('darkPlace', './assets/images/darkPlace5.png');
+            this.load.image('fog', './assets/images/darkPlace5.png');
+
+            //player
+            this.load.spritesheet('female', './assets/images/female.png', 15, 16, 2);
+            this.load.spritesheet('male', './assets/images/male.png', 15, 16, 2);
+            this.load.spritesheet('cat', './assets/images/bat.png', 16, 12, 2);
+
+            //objects
+            this.load.spritesheet('key', './assets/images/key.png', 16, 16, 2);
+            this.load.spritesheet('gem', './assets/images/gem.png', 16, 16, 2);
+            this.load.spritesheet('chest', './assets/images/chestGray.png', 16, 15, 2);
+            this.load.image('gold', './assets/images/gold.png');
+            this.load.image('Red gem', './assets/images/gemRed.png');
+            this.load.image('Green gem', './assets/images/gemGreen.png');
+            this.load.image('Blue gem', './assets/images/gemBlue.png');
+            this.load.image('exit', './assets/images/exit.png');
+            this.load.image('door', './assets/images/door3.png');
+
+            //enemies
+            this.load.spritesheet('guard', './assets/images/sceleton.png', 16, 16, 2);
+            this.load.spritesheet('bat', './assets/images/ghost.png', 16, 16, 2);
+            //    this.load.spritesheet('gorgul', './assets/images/gorgul.png', 15, 16, 2);
+            this.load.spritesheet('enemyVision', './assets/images/visionEnemy.png', 40, 40, 2);
+            this.load.spritesheet('enemyVision2', './assets/images/visionEnemy2.png', 60, 60, 2);
+            this.load.spritesheet('enemyVision3', './assets/images/visionEnemy3.png', 72, 70, 2);
+            //    this.load.image('rat', './assets/images/rat.png');
+
+            //gamepad buttons
+            this.load.spritesheet('pauseBtn', './assets/buttons/pause.png', 50, 50);
+            this.load.spritesheet('greenBtn', './assets/buttons/tileGreen_2.png', 208, 108);
+            this.load.spritesheet('yellowBtn', './assets/buttons/tileYellow_2.png', 208, 108);
+            this.load.spritesheet('orangeBtn', './assets/buttons/tileOrange_2.png', 208, 108);
+            this.load.spritesheet('redBtn', './assets/buttons/tileRed_2.png', 208, 108);
+            this.load.spritesheet('button', './assets/buttons/button.png', 32, 32);
+            this.load.spritesheet('buttonUse', './assets/buttons/buttonB.png', 64, 64);
+            this.load.spritesheet('buttonChange', './assets/buttons/buttonB.png', 32, 32);
+
+            this.game.gender = 'male';
+
+            this.load.bitmapFont('Nevis', './assets/fonts/Nevis.png', './assets/fonts/Nevis.fnt');
+            //music
+            this.load.audio('soundtrack', ['./assets/audio/soundtrack2.ogg'], true);
+        }
+    }, {
+        key: 'create',
+        value: function create() {
+            this.game.soundtrack = this.game.add.audio('soundtrack', 1, true);
+            this.game.soundtrack.play();
+            this.state.start('Homescreen');
+        }
+    }]);
+
+    return _class;
 }(_phaser2.default.State);
 
 exports.default = _class;
