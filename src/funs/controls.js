@@ -121,14 +121,14 @@ export const createControls = (wrld) => {
         else if (document.mozFullScreenEnabled){
            isFullScreenEnabled = document.mozFullScreenEnabled;
         }
-   
-        if (isFullScreenEnabled) { 
+//temporary block fullscr    
+/*        if (isFullScreenEnabled) { 
             if (wrld.game.device.desktop) {
                 wrld.keyFullscreen.fullscreen.onDown.add(gofull, wrld); 
             } else {
                 wrld.game.input.onDown.add(gofull, wrld);
             }
-        }
+        }*/
 
         function gofull() {
             if (wrld.game.scale.isFullScreen)

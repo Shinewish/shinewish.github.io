@@ -16,6 +16,7 @@ export default class extends Phaser.State {
     create () {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.map = this.game.add.tilemap('level1');
+        this.level = 'level1';
 
         //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
         this.map.addTilesetImage('tiles', 'gameTiles');

@@ -3,15 +3,39 @@ import Phaser from 'phaser'
 
 export default class extends Phaser.State {
     init (properties) {
+        let setScore = (level, score) => {
+            let n = localStorage.getItem("scores");
+            //let n = typeof(localStorage.getItem("scores"));
+            if (n == null) {
+                this.scores = {
+                    level1: 0,
+                    level2: 0
+                };
+                this.scores[level] = this.scores[level] + score;
+            } else {
+                this.scores = JSON.parse(localStorage.getItem("scores"));
+                this.scores[level] = this.scores[level] + score;
+            }
+        }
+
         if (properties) {
             this.message = properties.message;
             this.score = this.score + properties.score;
+            setScore(properties.level, properties.score);
             this.starterText = 'restart';
         } else {
             this.score = 0;
+            setScore('level1', 0);
             this.starterText = 'start';
         }
-        
+        this.scoresT = '';
+        for (let key in this.scores) {
+            this.scoresT = this.scoresT + key + ': ' + this.scores[key] + '\n';
+        }
+
+        let scoresJSON = JSON.stringify(this.scores); 
+        localStorage.setItem("scores", scoresJSON);
+         
         if (!this.game.device.desktop) {
             this.deviceText = 'Touch to ';
         } else {
@@ -44,12 +68,12 @@ export default class extends Phaser.State {
         };        
         
         let scoreTextBottom = messageText.bottom;
-        if (!(this.score == 0)) {
-            let scoreText = this.game.add.text(this.game.width / 2, 10 * scaleInd + messageText.bottom, 'Total score: ' + this.score, homescreenStyle); 
+        //if (!(this.score == 0)) {
+            let scoreText = this.game.add.text(this.game.width / 2, 10 * scaleInd + messageText.bottom, 'Scores: ' + this.scoresT, homescreenStyle); 
             scoreText.anchor.setTo(0.5, 0);
             scoreText.scale.setTo(scaleInd);
             scoreTextBottom = scoreText.bottom;
-        };
+        //};
         let mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + scoreTextBottom, 'Hide, take and RUN!', homescreenStyle); 
         mottoText.anchor.setTo(0.5, 0);
         mottoText.scale.setTo(scaleInd);

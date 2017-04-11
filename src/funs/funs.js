@@ -180,7 +180,7 @@ export const openDoor = (wrld, player, door) => {
 export const enterExit = (player, exit) => {
     let wrld = player.wld;
     if (wrld.game.player.hasKey) {
-      wrld.state.start('Homescreen', true, false, {message:'Well done!', score: wrld.score, time: wrld.game.timeText.text});
+      wrld.state.start('Homescreen', true, false, {message:'Well done!', level: wrld.level, score: wrld.score, time: wrld.game.timeText.text});
     } else {
         wrld.game.player.message1.text = 'You have first';
         wrld.game.player.message2.text = 'to find the key!';

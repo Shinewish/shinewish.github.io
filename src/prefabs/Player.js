@@ -6,6 +6,7 @@ export default class extends Phaser.Sprite {
     constructor (wld, game, x, y, type, room) {
         super(game, x, y, type/*, idle frame*/);
         this.anchor.setTo(0.5);
+        this.animations.add('go', [1, 0], 4, false);
 
         // [2,3] - animation frames
         // 4 - FPS

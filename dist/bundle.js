@@ -3111,7 +3111,7 @@ var openDoor = exports.openDoor = function openDoor(wrld, player, door) {
 var enterExit = exports.enterExit = function enterExit(player, exit) {
     var wrld = player.wld;
     if (wrld.game.player.hasKey) {
-        wrld.state.start('Homescreen', true, false, { message: 'Well done!', score: wrld.score, time: wrld.game.timeText.text });
+        wrld.state.start('Homescreen', true, false, { message: 'Well done!', level: wrld.level, score: wrld.score, time: wrld.game.timeText.text });
     } else {
         wrld.game.player.message1.text = 'You have first';
         wrld.game.player.message2.text = 'to find the key!';
@@ -4544,14 +4544,14 @@ var createControls = exports.createControls = function createControls(wrld) {
     } else if (document.mozFullScreenEnabled) {
         isFullScreenEnabled = document.mozFullScreenEnabled;
     }
-
-    if (isFullScreenEnabled) {
-        if (wrld.game.device.desktop) {
-            wrld.keyFullscreen.fullscreen.onDown.add(gofull, wrld);
-        } else {
-            wrld.game.input.onDown.add(gofull, wrld);
-        }
-    }
+    //temporary block fullscr    
+    /*        if (isFullScreenEnabled) { 
+                if (wrld.game.device.desktop) {
+                    wrld.keyFullscreen.fullscreen.onDown.add(gofull, wrld); 
+                } else {
+                    wrld.game.input.onDown.add(gofull, wrld);
+                }
+            }*/
 
     function gofull() {
         if (wrld.game.scale.isFullScreen) {
@@ -4601,6 +4601,7 @@ var _class = function (_Phaser$Sprite) {
         var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, game, x, y, type /*, idle frame*/));
 
         _this.anchor.setTo(0.5);
+        _this.animations.add('go', [1, 0], 4, false);
 
         // [2,3] - animation frames
         // 4 - FPS
@@ -4856,6 +4857,7 @@ var _class = function (_Phaser$State) {
         value: function create() {
             this.game.physics.startSystem(_phaser2.default.Physics.ARCADE);
             this.map = this.game.add.tilemap('level1');
+            this.level = 'level1';
 
             //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
             this.map.addTilesetImage('tiles', 'gameTiles');
@@ -5035,16 +5037,42 @@ var _class = function (_Phaser$State) {
     }
 
     _createClass(_class, [{
-        key: 'init',
+        key: "init",
         value: function init(properties) {
+            var _this2 = this;
+
+            var setScore = function setScore(level, score) {
+                var n = localStorage.getItem("scores");
+                //let n = typeof(localStorage.getItem("scores"));
+                if (n == null) {
+                    _this2.scores = {
+                        level1: 0,
+                        level2: 0
+                    };
+                    _this2.scores[level] = _this2.scores[level] + score;
+                } else {
+                    _this2.scores = JSON.parse(localStorage.getItem("scores"));
+                    _this2.scores[level] = _this2.scores[level] + score;
+                }
+            };
+
             if (properties) {
                 this.message = properties.message;
                 this.score = this.score + properties.score;
+                setScore(properties.level, properties.score);
                 this.starterText = 'restart';
             } else {
                 this.score = 0;
+                setScore('level1', 0);
                 this.starterText = 'start';
             }
+            this.scoresT = '';
+            for (var key in this.scores) {
+                this.scoresT = this.scoresT + key + ': ' + this.scores[key] + '\n';
+            }
+
+            var scoresJSON = JSON.stringify(this.scores);
+            localStorage.setItem("scores", scoresJSON);
 
             if (!this.game.device.desktop) {
                 this.deviceText = 'Touch to ';
@@ -5053,10 +5081,10 @@ var _class = function (_Phaser$State) {
             }
         }
     }, {
-        key: 'preload',
+        key: "preload",
         value: function preload() {}
     }, {
-        key: 'create',
+        key: "create",
         value: function create() {
             var background = this.game.add.sprite(0, 0, 'HomescreenBack');
             background.inputEnabled = true;
@@ -5080,12 +5108,12 @@ var _class = function (_Phaser$State) {
             };
 
             var scoreTextBottom = messageText.bottom;
-            if (!(this.score == 0)) {
-                var scoreText = this.game.add.text(this.game.width / 2, 10 * scaleInd + messageText.bottom, 'Total score: ' + this.score, homescreenStyle);
-                scoreText.anchor.setTo(0.5, 0);
-                scoreText.scale.setTo(scaleInd);
-                scoreTextBottom = scoreText.bottom;
-            };
+            //if (!(this.score == 0)) {
+            var scoreText = this.game.add.text(this.game.width / 2, 10 * scaleInd + messageText.bottom, 'Scores: ' + this.scoresT, homescreenStyle);
+            scoreText.anchor.setTo(0.5, 0);
+            scoreText.scale.setTo(scaleInd);
+            scoreTextBottom = scoreText.bottom;
+            //};
             var mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + scoreTextBottom, 'Hide, take and RUN!', homescreenStyle);
             mottoText.anchor.setTo(0.5, 0);
             mottoText.scale.setTo(scaleInd);
@@ -10985,7 +11013,7 @@ module.exports = __webpack_require__(/*! ./modules/_core */ 25);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! babel-polyfill */122);
-module.exports = __webpack_require__(/*! c:\wamp64\www\Game V2\src\main.js */121);
+module.exports = __webpack_require__(/*! d:\JS\Shinewish-front-end-course\game\src\main.js */121);
 
 
 /***/ })
