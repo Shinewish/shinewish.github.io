@@ -4821,7 +4821,7 @@ var _class = function (_Phaser$Sprite) {
         _this.body.collideWorldBounds = true;
         _this.body.setSize(10, 10, 3, 3);
 
-        _this.textStyle = { font: '14px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
+        _this.textStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
 
         _this.message1 = _this.game.add.text(_this.x, _this.y - 45, '', _this.textStyle);
         _this.message1.anchor.setTo(0.5, 0);
@@ -5078,7 +5078,7 @@ var _class = function (_Phaser$State) {
             this.backgroundlayer.resizeWorld();
 
             //create game objects
-            this.itemTextStyle = { font: '14px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
+            this.itemTextStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
 
             this.game.groups = [];
             (0, _funs.createItems)(this, 'chest');
@@ -5098,16 +5098,16 @@ var _class = function (_Phaser$State) {
             //create score
             this.score = 0;
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            this.game.style = { font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2 };
+            this.game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 2 };
             this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
             this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style);
             this.scoreText.fixedToCamera = true;
             this.scoreString.fixedToCamera = true;
-            this.gameStyle = { font: '50px PS2P', fill: 'red' };
+            this.gameStyle = { font: '50px Nevis', fill: 'red' };
             this.gameText = this.game.add.text(80, 120, '', this.gameStyle);
             this.gameText.fixedToCamera = true;
             this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
-            this.game.timeText.style.font = fSize + 5 + 'px PS2P';
+            this.game.timeText.style.font = fSize + 5 + 'px Nevis';
             this.game.timeText.fixedToCamera = true;
             this.game.timeText.anchor.setTo(0.5, 0);
 
@@ -5314,14 +5314,13 @@ var _class = function (_Phaser$State) {
             background.height = this.game.height;
             var scaleInd = 1;
             var hMessage = 0;
-            if (this.game.width < 480) {
-                scaleInd = this.game.width / 480;
-            } else if (this.game.height < 352) {
+            if (this.game.width < 320) {
+                scaleInd = this.game.width / 340;
+            } else if (this.game.height / 352 < 1) {
                 scaleInd = this.game.height / 352;
             };
 
-            var ftSize = 24 * scaleInd;
-            var homescreenStyle = { font: 'bold ' + ftSize + 'px PS2P', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
+            var homescreenStyle = { font: 'bold 24px Nevis', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
             var messageText = this.game.add.text(this.game.width / 2, hMessage + 10 * scaleInd, '', homescreenStyle);
             messageText.anchor.setTo(0.5, 0);
             messageText.scale.setTo(scaleInd);
@@ -5442,7 +5441,7 @@ var _class = function (_Phaser$State) {
             background.height = this.game.height;
 
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            game.style = { font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
+            game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
             // levels
             (0, _funs.crtBtn)(game, 'levels', 'LEVELS', 'greenBtn', game.camera.width / 2, game.camera.height / 8, 0.8, 0.5);
             game.levelsBtn.events.onInputUp.add(function () {
