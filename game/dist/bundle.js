@@ -5072,7 +5072,7 @@ var _class = function (_Phaser$State) {
             this.blockedLayer = this.map.createLayer('blockedLayer');
 
             //create collision on blockedLayer
-            this.map.setCollisionBetween(1, 2000, true, 'blockedLayer');
+            this.map.setCollisionBetween(1, 5000, true, 'blockedLayer');
 
             //resizes the game world to match the layer dimensions
             this.backgroundlayer.resizeWorld();
