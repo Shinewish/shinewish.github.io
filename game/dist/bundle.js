@@ -5184,7 +5184,7 @@ var _class = function (_Phaser$State) {
                     enemy.vision.frame = 1;
                     enemy.xTarg = this.game.player.x;
                     enemy.yTarg = this.game.player.y;
-                    if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 10) {
+                    if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 20) {
                         (0, _funs.isFound)(this);
                     }
                 } else {
