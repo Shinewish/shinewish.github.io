@@ -1644,11 +1644,20 @@ var findObjectsByType = exports.findObjectsByType = function findObjectsByType(w
 
 //create a sprite from an object
 var createFromTiledObject = exports.createFromTiledObject = function createFromTiledObject(wrld, element, group) {
-    var sprite = group.create(element.x, element.y, element.properties.sprite);
+    var sprite = {};
+    if (element.properties.sprite == 'gold') {
+        sprite = group.create(element.x, element.y, 'coin');
+    } else {
+        sprite = group.create(element.x, element.y, element.properties.sprite);
+    }
     //copy all properties to the sprite
     Object.keys(element.properties).forEach(function (key) {
         sprite[key] = element.properties[key];
     });
+    if (element.properties.sprite == 'gold') {
+        sprite.animations.add('turn', [0, 1, 2, 3, 4, 5], 5, true);
+    };
+    sprite.play('turn');
     return sprite;
 };
 
@@ -1759,19 +1768,22 @@ var collect = exports.collect = function collect(player, collectable, wrld) {
         } else {
             createItems(wrld, inside.type);
         }
-    } else if (collectable.type == 'key') {
-        player.hasKey = 1;
-    } else if (collectable.gem) {
-        player.hasGem = 1;
-        player.wld.score = player.wld.score + 20;
+        collectable.loadTexture('chest', 1);
+        collectable.body.enable = false; // la-la
     } else {
-        wrld.score = wrld.score + 10;
+        if (collectable.type == 'key') {
+            player.hasKey = 1;
+        } else if (collectable.gem) {
+            player.hasGem = 1;
+            player.wld.score = player.wld.score + 50;
+        } else {
+            wrld.score = wrld.score + 10;
+        }
+        collectable.destroy();
     }
-
     //remove sprite
     // collectable.message1.text = '';
     // collectable.message2.text = '';
-    collectable.destroy();
 };
 
 var openDoor = exports.openDoor = function openDoor(wrld, player, door) {
@@ -3226,7 +3238,9 @@ var _class = function (_Phaser$Sprite) {
     function _class(game, player, x, y, sprite, path) {
         _classCallCheck(this, _class);
 
-        var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, game, x, y, sprite /*, idle frame*/));
+        var look = game.level + ' ' + sprite;
+
+        var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, game, x, y, look /*, idle frame*/));
 
         _this.anchor.setTo(0.5);
 
@@ -3235,7 +3249,7 @@ var _class = function (_Phaser$Sprite) {
         _this.player = player;
 
         if (sprite == 'guard') {
-            _this.speed = 57;
+            _this.speed = 45;
             _this.visRad = 40;
             _this.visRadAlert = 60;
             _this.lookRange = _this.game.math.PI2 / 8;
@@ -3243,7 +3257,7 @@ var _class = function (_Phaser$Sprite) {
             _this.anch = 0;
         }
         if (sprite == 'bat') {
-            _this.speed = 57;
+            _this.speed = 45;
             _this.visRad = 25;
             _this.visRadAlert = 35;
             _this.lookRange = _this.game.math.PI2 / 2;
@@ -3289,6 +3303,7 @@ var _class = function (_Phaser$Sprite) {
         _this.vision.alpha = 0.5;
         _this.vision.anchor.setTo(_this.anch);
         _this.vision.rotation = _this.getDirect() - _this.lookRange;
+        _this.vision.moveDown();
         return _this;
     }
 
@@ -4792,7 +4807,7 @@ var _class = function (_Phaser$Sprite) {
         _this.isHiding = 0;
         _this.room = parseInt(room);
 
-        _this.speed = 60;
+        _this.speed = 45;
         _this.visibility = 1;
         _this.isSeen = 0;
 
@@ -4806,7 +4821,7 @@ var _class = function (_Phaser$Sprite) {
         _this.body.collideWorldBounds = true;
         _this.body.setSize(10, 10, 3, 3);
 
-        _this.textStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
+        _this.textStyle = { font: '14px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
 
         _this.message1 = _this.game.add.text(_this.x, _this.y - 45, '', _this.textStyle);
         _this.message1.anchor.setTo(0.5, 0);
@@ -4936,6 +4951,10 @@ var _class = function (_Phaser$State) {
   _createClass(_class, [{
     key: 'init',
     value: function init() {
+      _phaser2.default.Canvas.setImageRenderingCrisp(game.canvas); //for Canvas, modern approach
+      _phaser2.default.Canvas.setSmoothingEnabled(game.context, false); //also for Canvas, legacy approach
+      PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST; //for WebGL
+
       this.stage.backgroundColor = '#EDEEC9';
       this.fontsReady = false;
       this.fontsLoaded = this.fontsLoaded.bind(this);
@@ -4954,8 +4973,8 @@ var _class = function (_Phaser$State) {
       var text = this.add.text(this.world.centerX, this.world.centerY, 'loading', { font: '16px Arial', fill: '#dddddd', align: 'center' });
       text.anchor.setTo(0.5, 0.5);
       //assets we'll use in the loading screen
-      this.load.image('preloadBg', '../../assets/images/loader-bg.png');
-      this.load.image('preloadbar', '../../assets/images/preloader-bar.png');
+      this.load.image('preloadBg', './assets/images/loader-bg.png');
+      this.load.image('preloadbar', './assets/images/preloader-bar.png');
     }
   }, {
     key: 'render',
@@ -5059,7 +5078,7 @@ var _class = function (_Phaser$State) {
             this.backgroundlayer.resizeWorld();
 
             //create game objects
-            this.itemTextStyle = { font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center' };
+            this.itemTextStyle = { font: '14px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center' };
 
             this.game.groups = [];
             (0, _funs.createItems)(this, 'chest');
@@ -5079,20 +5098,20 @@ var _class = function (_Phaser$State) {
             //create score
             this.score = 0;
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            this.game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
+            this.game.style = { font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2 };
             this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
             this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style);
             this.scoreText.fixedToCamera = true;
             this.scoreString.fixedToCamera = true;
-            this.gameStyle = { font: '50px Nevis', fill: 'red' };
+            this.gameStyle = { font: '50px PS2P', fill: 'red' };
             this.gameText = this.game.add.text(80, 120, '', this.gameStyle);
             this.gameText.fixedToCamera = true;
             this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
-            this.game.timeText.style.font = fSize + 5 + 'px Nevis';
+            this.game.timeText.style.font = fSize + 5 + 'px PS2P';
             this.game.timeText.fixedToCamera = true;
             this.game.timeText.anchor.setTo(0.5, 0);
 
-            //    this.fpsStyle = {font: '20px Nevis', fill :'green'};
+            //    this.fpsStyle = {font: '20px PS2P', fill :'green'};
             //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
             //    this.fpsText.fixedToCamera = true;
 
@@ -5165,7 +5184,7 @@ var _class = function (_Phaser$State) {
                     enemy.vision.frame = 1;
                     enemy.xTarg = this.game.player.x;
                     enemy.yTarg = this.game.player.y;
-                    if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 25) {
+                    if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 10) {
                         (0, _funs.isFound)(this);
                     }
                 } else {
@@ -5227,7 +5246,7 @@ var _class = function (_Phaser$State) {
         value: function init(properties) {
             var _this2 = this;
 
-            var setTimescores = function setTimescores(level, timescore) {
+            var setTimescores = function setTimescores(level, timescore, score) {
                 var n = localStorage.getItem("Timescores");
                 //let n = typeof(localStorage.getItem("Timescores"));
                 if (n == null) {
@@ -5235,13 +5254,24 @@ var _class = function (_Phaser$State) {
                         'level 1': '',
                         'level 2': ''
                     };
-                    _this2.Timescores[level] = timescore;
                 } else {
                     _this2.Timescores = JSON.parse(localStorage.getItem("Timescores"));
                     if (_this2.Timescores[level] > timescore || _this2.Timescores[level] == '') {
-                        _this2.Timescores[level] = timescore;
+                        _this2.Timescores[level] = timescore + _this2.Timescores[level].substr(5);
                         if (_this2.message) {
-                            _this2.message = _this2.message + '\nNew best score!\n' + level + ': ' + timescore;
+                            _this2.message = _this2.message + '\nNew best time!\n' + level + ': ' + timescore;
+                        }
+                    }
+                    if (_this2.Timescores[level]) {
+                        var scoreInt = parseInt(_this2.Timescores[level].substr(11));
+                        if (scoreInt != scoreInt) {
+                            scoreInt = 0;
+                        }
+                        if (score > scoreInt) {
+                            _this2.Timescores[level] = _this2.Timescores[level].substr(0, 5) + '      ' + score;
+                            if (_this2.message) {
+                                _this2.message = _this2.message + '\nNew best score!\n' + level + ': ' + score;
+                            }
                         }
                     }
                 }
@@ -5250,11 +5280,12 @@ var _class = function (_Phaser$State) {
             if (properties) {
                 this.message = properties.message;
                 this.timescore = properties.time;
-                setTimescores(properties.level, properties.time);
+                this.gold = properties.score;
+                setTimescores(properties.level, properties.time, properties.score);
                 this.starterText = 'restart';
             } else {
                 this.timescore = '';
-                setTimescores('level 1', '');
+                setTimescores('level 1', '', '');
                 this.starterText = 'start';
             }
             game.TimescoresT = '';
@@ -5283,32 +5314,39 @@ var _class = function (_Phaser$State) {
             background.height = this.game.height;
             var scaleInd = 1;
             var hMessage = 0;
-            if (this.game.width < 320) {
-                scaleInd = this.game.width / 340;
-            } else if (this.game.height / 352 < 1) {
+            if (this.game.width < 480) {
+                scaleInd = this.game.width / 480;
+            } else if (this.game.height < 352) {
                 scaleInd = this.game.height / 352;
             };
 
-            var homescreenStyle = { font: 'bold 24px Nevis', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
+            var ftSize = 24 * scaleInd;
+            var homescreenStyle = { font: 'bold ' + ftSize + 'px PS2P', fill: '#fcff00', stroke: 'black', strokeThickness: 3, align: 'center' };
             var messageText = this.game.add.text(this.game.width / 2, hMessage + 10 * scaleInd, '', homescreenStyle);
             messageText.anchor.setTo(0.5, 0);
             messageText.scale.setTo(scaleInd);
-            if (this.message) {
+            if (this.message && this.message.length > 40) {
                 messageText.text = this.message;
-            };
 
-            var mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + messageText.bottom, 'Hide, take and RUN!', homescreenStyle);
-            mottoText.anchor.setTo(0.5, 0);
-            mottoText.scale.setTo(scaleInd);
+                var homescreenText = this.game.add.text(this.game.width / 2, 30 * scaleInd + messageText.bottom, this.deviceText + 'continue', homescreenStyle);
+                homescreenText.anchor.setTo(0.5, 0);
+                homescreenText.scale.setTo(scaleInd);
+            } else {
+                messageText.text = this.message ? this.message : '';
 
-            var goldPile = this.game.add.sprite(this.game.width / 2, 10 * scaleInd + mottoText.bottom, 'goldPile');
-            goldPile.scale.setTo(122 / 191 * scaleInd);
-            goldPile.anchor.setTo(0.5, 0);
-            //goldPile.height = this.game.height;
+                var mottoText = this.game.add.text(this.game.width / 2, 30 * scaleInd + messageText.bottom, 'Hide, take and RUN!', homescreenStyle);
+                mottoText.anchor.setTo(0.5, 0);
+                mottoText.scale.setTo(scaleInd);
 
-            var homescreenText = this.game.add.text(this.game.width / 2, 10 * scaleInd + goldPile.bottom, this.deviceText + 'continue', homescreenStyle);
-            homescreenText.anchor.setTo(0.5, 0);
-            homescreenText.scale.setTo(scaleInd);
+                var goldPile = this.game.add.sprite(this.game.width / 2, 10 * scaleInd + mottoText.bottom, 'goldPile');
+                goldPile.scale.setTo(122 / 191 * scaleInd);
+                goldPile.anchor.setTo(0.5, 0);
+                //goldPile.height = this.game.height;
+
+                var _homescreenText = this.game.add.text(this.game.width / 2, 10 * scaleInd + goldPile.bottom, this.deviceText + 'continue', homescreenStyle);
+                _homescreenText.anchor.setTo(0.5, 0);
+                _homescreenText.scale.setTo(scaleInd);
+            }
 
             this.keySpace = this.game.input.keyboard.addKeys({ 'space': _phaser2.default.Keyboard.SPACEBAR });
             this.keySpace.space.onDown.add(function () {
@@ -5404,7 +5442,7 @@ var _class = function (_Phaser$State) {
             background.height = this.game.height;
 
             var fSize = 30 / 480 * game.camera.width < 20 ? 30 / 480 * game.camera.width : 20;
-            game.style = { font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
+            game.style = { font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 3 };
             // levels
             (0, _funs.crtBtn)(game, 'levels', 'LEVELS', 'greenBtn', game.camera.width / 2, game.camera.height / 8, 0.8, 0.5);
             game.levelsBtn.events.onInputUp.add(function () {
@@ -5430,11 +5468,11 @@ var _class = function (_Phaser$State) {
             });
 
             // scoreboard 
-            (0, _funs.crtBtn)(game, 'scoreboard', 'Timescores', 'yellowBtn', game.camera.width / 2, game.camera.height * 3 / 8, 0.8, 0.5);
+            (0, _funs.crtBtn)(game, 'scoreboard', 'Scores', 'yellowBtn', game.camera.width / 2, game.camera.height * 3 / 8, 0.8, 0.5);
             game.scoreboardBtn.events.onInputUp.add(function () {
                 (0, _funs.clrMenu)(game);
 
-                /*!!!!70!!!!*/game.timescoreText = game.add.text(game.width / 2, game.camera.height / 8, 'Timescores: \n' + game.TimescoresT, game.style);
+                /*!!!!70!!!!*/game.timescoreText = game.add.text(game.width / 2, game.camera.height / 8, '             Time:     Score:\n' + game.TimescoresT, game.style);
                 game.timescoreText.anchor.setTo(0.5, 0);
                 //        timescoreText.scale.setTo(scaleInd);
                 (0, _funs.crtBtn)(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, game.camera.height * 7 / 8, 0.8, 0.5);
@@ -5608,9 +5646,10 @@ var _class = function (_Phaser$State) {
             this.load.spritesheet('cat', './assets/images/bat.png', 16, 12, 2);
 
             //objects
-            this.load.spritesheet('key', './assets/images/key.png', 16, 16, 2);
+            this.load.spritesheet('key', './assets/images/key2.png', 16, 16, 2);
             this.load.spritesheet('gem', './assets/images/gem.png', 16, 16, 2);
-            this.load.spritesheet('chest', './assets/images/chestGray.png', 16, 15, 2);
+            this.load.spritesheet('chest', './assets/images/chestGray2.png', 16, 16, 2);
+            this.load.spritesheet('coin', './assets/images/coin.png', 9, 16, 6);
             this.load.image('gold', './assets/images/gold.png');
             this.load.image('Red gem', './assets/images/gemRed.png');
             this.load.image('Green gem', './assets/images/gemGreen.png');
@@ -5619,8 +5658,10 @@ var _class = function (_Phaser$State) {
             this.load.image('door', './assets/images/door3.png');
 
             //enemies
-            this.load.spritesheet('guard', './assets/images/sceleton.png', 16, 16, 2);
-            this.load.spritesheet('bat', './assets/images/ghost.png', 16, 16, 2);
+            this.load.spritesheet('level 1 guard', './assets/images/sceleton.png', 16, 16, 2);
+            this.load.spritesheet('level 2 guard', './assets/images/bear.png', 16, 16, 2);
+            this.load.spritesheet('level 1 bat', './assets/images/ghost.png', 16, 16, 2);
+            this.load.spritesheet('level 2 bat', './assets/images/scorpio.png', 16, 16, 2);
             //    this.load.spritesheet('gorgul', './assets/images/gorgul.png', 15, 16, 2);
             this.load.spritesheet('enemyVision', './assets/images/visionEnemy.png', 40, 40, 2);
             this.load.spritesheet('enemyVision2', './assets/images/visionEnemy2.png', 60, 60, 2);
@@ -5639,9 +5680,11 @@ var _class = function (_Phaser$State) {
 
             this.game.gender = 'male';
 
+            // fonts
+            this.load.bitmapFont('PS2P', './assets/fonts/PS2P.png', './assets/fonts/PS2P.fnt');
             this.load.bitmapFont('Nevis', './assets/fonts/Nevis.png', './assets/fonts/Nevis.fnt');
             //music
-            this.load.audio('soundtrack', ['./assets/audio/soundtrack2.ogg'], true);
+            this.load.audio('soundtrack', ['./assets/audio/soundtrack.ogg'], true);
         }
     }, {
         key: 'create',
@@ -11427,7 +11470,7 @@ module.exports = __webpack_require__(/*! ./modules/_core */ 25);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! babel-polyfill */122);
-module.exports = __webpack_require__(/*! d:\JS\Shinewish-front-end-course\game\src\main.js */121);
+module.exports = __webpack_require__(/*! d:\JS\RS_M\Game Test 2\src\main.js */121);
 
 
 /***/ })

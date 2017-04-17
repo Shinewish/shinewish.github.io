@@ -37,11 +37,20 @@ export const findObjectsByType = (wrld, type, map, layer) => {
 
 //create a sprite from an object
 export const createFromTiledObject = (wrld, element, group) => {
-    let sprite = group.create(element.x, element.y, element.properties.sprite);
+    let sprite = {};
+    if (element.properties.sprite == 'gold') {
+        sprite = group.create(element.x, element.y, 'coin');
+    } else {
+        sprite = group.create(element.x, element.y, element.properties.sprite);
+    }
     //copy all properties to the sprite
     Object.keys(element.properties).forEach(function(key){
         sprite[key] = element.properties[key];
     });
+    if (element.properties.sprite == 'gold') {
+        sprite.animations.add('turn', [0, 1, 2, 3, 4, 5], 5, true);
+    };
+    sprite.play('turn');
     return sprite;
 }
 
@@ -152,19 +161,22 @@ export const collect = (player, collectable, wrld) => {
         } else {
             createItems(wrld, inside.type);
         }
-    } else if (collectable.type == 'key') {
-        player.hasKey = 1;
-    } else if (collectable.gem) {
-        player.hasGem = 1;
-        player.wld.score = player.wld.score + 20;
+        collectable.loadTexture('chest', 1);
+        collectable.body.enable = false; // la-la
     } else {
-        wrld.score = wrld.score + 10;
+        if (collectable.type == 'key') {
+            player.hasKey = 1;
+        } else if (collectable.gem) {
+            player.hasGem = 1;
+            player.wld.score = player.wld.score + 50;
+        } else {
+            wrld.score = wrld.score + 10;
+        }
+        collectable.destroy();
     }
-
     //remove sprite
     // collectable.message1.text = '';
     // collectable.message2.text = '';
-    collectable.destroy();
 }
 
 export const openDoor = (wrld, player, door) => {    

@@ -33,9 +33,10 @@ export default class extends Phaser.State {
         this.load.spritesheet('cat', './assets/images/bat.png', 16, 12, 2);
         
         //objects
-        this.load.spritesheet('key', './assets/images/key.png', 16, 16, 2);
+        this.load.spritesheet('key', './assets/images/key2.png', 16, 16, 2);
         this.load.spritesheet('gem', './assets/images/gem.png', 16, 16, 2);
-        this.load.spritesheet('chest', './assets/images/chestGray.png', 16, 15, 2);
+        this.load.spritesheet('chest', './assets/images/chestGray2.png', 16, 16, 2);
+        this.load.spritesheet('coin', './assets/images/coin.png', 9, 16, 6);
         this.load.image('gold', './assets/images/gold.png');
         this.load.image('Red gem', './assets/images/gemRed.png');
         this.load.image('Green gem', './assets/images/gemGreen.png');
@@ -44,8 +45,10 @@ export default class extends Phaser.State {
         this.load.image('door', './assets/images/door3.png');
 
         //enemies
-        this.load.spritesheet('guard', './assets/images/sceleton.png', 16, 16, 2);
-        this.load.spritesheet('bat', './assets/images/ghost.png', 16, 16, 2);
+        this.load.spritesheet('level 1 guard', './assets/images/sceleton.png', 16, 16, 2);
+        this.load.spritesheet('level 2 guard', './assets/images/bear.png', 16, 16, 2);
+        this.load.spritesheet('level 1 bat', './assets/images/ghost.png', 16, 16, 2);
+        this.load.spritesheet('level 2 bat', './assets/images/scorpio.png', 16, 16, 2);
     //    this.load.spritesheet('gorgul', './assets/images/gorgul.png', 15, 16, 2);
         this.load.spritesheet('enemyVision', './assets/images/visionEnemy.png', 40, 40, 2);
         this.load.spritesheet('enemyVision2', './assets/images/visionEnemy2.png', 60, 60, 2);
@@ -64,9 +67,11 @@ export default class extends Phaser.State {
 
         this.game.gender = 'male';
 
+        // fonts
+        this.load.bitmapFont('PS2P', './assets/fonts/PS2P.png', './assets/fonts/PS2P.fnt');
         this.load.bitmapFont('Nevis', './assets/fonts/Nevis.png', './assets/fonts/Nevis.fnt');
          //music
-        this.load.audio('soundtrack', ['./assets/audio/soundtrack2.ogg'], true);
+        this.load.audio('soundtrack', ['./assets/audio/soundtrack.ogg'], true);
     }
 
     create () {

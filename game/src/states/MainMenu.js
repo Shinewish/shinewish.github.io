@@ -34,7 +34,7 @@ export default class extends Phaser.State {
         background.height = this.game.height;
 
         let fSize = ((30 / 480 * game.camera.width) < 20) ? (30 / 480 * game.camera.width) : 20;
-        game.style = {font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        game.style = {font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
 // levels
         crtBtn(game, 'levels', 'LEVELS', 'greenBtn', game.camera.width / 2, (game.camera.height) / 8, 0.8, 0.5);
         game.levelsBtn.events.onInputUp.add(function () {            
@@ -60,12 +60,12 @@ export default class extends Phaser.State {
         });
 
 // scoreboard 
-        crtBtn(game, 'scoreboard', 'Timescores', 'yellowBtn', game.camera.width / 2, (game.camera.height) * 3 / 8, 0.8, 0.5);
+        crtBtn(game, 'scoreboard', 'Scores', 'yellowBtn', game.camera.width / 2, (game.camera.height) * 3 / 8, 0.8, 0.5);
         game.scoreboardBtn.events.onInputUp.add(function () {            
             clrMenu(game);
     
     
-/*!!!!70!!!!*/  game.timescoreText = game.add.text(game.width / 2, (game.camera.height) / 8, 'Timescores: \n' + game.TimescoresT, game.style); 
+/*!!!!70!!!!*/  game.timescoreText = game.add.text(game.width / 2, (game.camera.height) / 8, '             Time:     Score:\n' + game.TimescoresT, game.style); 
             game.timescoreText.anchor.setTo(0.5, 0);
 //        timescoreText.scale.setTo(scaleInd);
             crtBtn(game, 'back', 'BACK', 'redBtn', game.camera.width / 2, (game.camera.height) * 7 / 8, 0.8, 0.5);

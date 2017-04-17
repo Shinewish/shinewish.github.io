@@ -3,7 +3,8 @@ import Phaser from 'phaser'
 export default class extends Phaser.Sprite {
 
     constructor (game, player, x, y, sprite, path) {
-        super(game, x, y, sprite/*, idle frame*/);
+        let look = game.level + ' ' + sprite;
+        super(game, x, y, look/*, idle frame*/);
         this.anchor.setTo(0.5);
 
         this.game = game;
@@ -11,7 +12,7 @@ export default class extends Phaser.Sprite {
         this.player = player;
 
         if (sprite == 'guard') {
-            this.speed = 57;
+            this.speed = 45;
             this.visRad = 40;
             this.visRadAlert = 60;
             this.lookRange = this.game.math.PI2 / 8;
@@ -19,7 +20,7 @@ export default class extends Phaser.Sprite {
             this.anch = 0;
         }
         if (sprite == 'bat') {
-            this.speed = 57;
+            this.speed = 45;
             this.visRad = 25;
             this.visRadAlert = 35;
             this.lookRange = this.game.math.PI2 / 2;
@@ -65,6 +66,7 @@ export default class extends Phaser.Sprite {
         this.vision.alpha = 0.5;
         this.vision.anchor.setTo(this.anch);
         this.vision.rotation = this.getDirect() - this.lookRange;
+        this.vision.moveDown();
     }
 
     update () {

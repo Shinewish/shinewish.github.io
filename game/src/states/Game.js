@@ -36,7 +36,7 @@ export default class extends Phaser.State {
         this.backgroundlayer.resizeWorld();
 
         //create game objects
-        this.itemTextStyle = {font: '14px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3, align: 'center'};
+        this.itemTextStyle = {font: '14px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2, align: 'center'};
 
         this.game.groups = [];
         createItems(this,'chest');
@@ -56,20 +56,20 @@ export default class extends Phaser.State {
         //create score
         this.score = 0;
         let fSize = ((30 / 480 * game.camera.width) < 20) ? (30 / 480 * game.camera.width) : 20;
-        this.game.style = {font: fSize + 'px Nevis', fill: '#fcff00', stroke: '#412017', strokeThickness: 3};
+        this.game.style = {font: fSize + 'px PS2P', fill: '#fcff00', stroke: '#412017', strokeThickness: 2};
         this.scoreString = this.game.add.text(fSize / 2, fSize, 'Score:', this.game.style);
         this.scoreText = this.game.add.text(this.scoreString.right + fSize / 2, fSize, '', this.game.style); 
         this.scoreText.fixedToCamera = true;
         this.scoreString.fixedToCamera = true;
-        this.gameStyle = {font: '50px Nevis', fill :'red'};
+        this.gameStyle = {font: '50px PS2P', fill :'red'};
         this.gameText = this.game.add.text(80, 120, '', this.gameStyle); 
         this.gameText.fixedToCamera = true;
         this.game.timeText = this.game.add.text(this.game.camera.width / 2, fSize, "00:00", this.game.style);
-        this.game.timeText.style.font = (fSize + 5) + 'px Nevis';
+        this.game.timeText.style.font = (fSize + 5) + 'px PS2P';
         this.game.timeText.fixedToCamera = true;
         this.game.timeText.anchor.setTo(0.5, 0);
 
-    //    this.fpsStyle = {font: '20px Nevis', fill :'green'};
+    //    this.fpsStyle = {font: '20px PS2P', fill :'green'};
     //    this.fpsText = this.game.add.text(this.game.width - 50, 20, '', this.fpsStyle); 
     //    this.fpsText.fixedToCamera = true;
 
@@ -152,7 +152,7 @@ export default class extends Phaser.State {
                 enemy.vision.frame = 1;
                 enemy.xTarg = this.game.player.x;
                 enemy.yTarg = this.game.player.y;
-                if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 25) {
+                if (this.game.math.distance(enemy.x + 8, enemy.y + 8, this.game.player.x, this.game.player.y) < 10) {
                     isFound(this);
                 }
             } else {
