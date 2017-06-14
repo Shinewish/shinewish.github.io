@@ -1,0 +1,5 @@
+- ViewType:
+	activeStyle change
+
+-Calendar
+	DayNames in separate component

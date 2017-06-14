@@ -1,0 +1,46 @@
+{
+  "name": "rs-calendar",
+  "version": "1.0.0",
+  "description": "vision of rs-calendar web-application",
+  "scripts": {
+    "start": "webpack-dev-server -d",
+    "build": "webpack -p",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "shinewish@mail.ru",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.6.5",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "eslint": "^2.8.0",
+    "eslint-config-airbnb": "^8.0.0",
+    "eslint-plugin-import": "^1.6.1",
+    "eslint-plugin-jsx-a11y": "^1.0.4",
+    "eslint-plugin-react": "^5.0.1",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "deep-freeze": "0.0.1",
+    "expect": "^1.14.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "node-uuid": "^1.4.8",
+    "normalizr": "^3.2.2",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "react-router": "^3.0.5",
+    "redux": "^3.3.1",
+    "redux-logger": "^3.0.1",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0",
+    "styled-jsx": "^1.0.4"
+  }
+}
